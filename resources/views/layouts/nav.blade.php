@@ -7,10 +7,6 @@
     <title><nav></nav></title>
 </head>
 <body>
-<<<<<<< HEAD
     
-=======
-    test nav layout
->>>>>>> b1396623be402d578f04352739d41add00a2cc82
 </body>
 </html>
