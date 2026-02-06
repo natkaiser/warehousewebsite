@@ -4,14 +4,26 @@
 
 @section('content')
 
-{{-- DATA DUMMY: Riwayat Transaksi Keluar --}}
 @php
     $dummyOutHistory = [
-        (object)['tanggal' => '06/02/2026', 'kode_barang' => 'BRG-001', 'nama_barang' => 'Aqua', 'customer' => 'Toko Sejahtera', 'jumlah' => 20, 'keterangan' => 'Pesanan Rutin'],
-        (object)['tanggal' => '06/02/2026', 'kode_barang' => 'BRG-003', 'nama_barang' => 'Switch Hub 24 Port', 'customer' => 'PT. Teknologi Maju', 'jumlah' => 1, 'keterangan' => 'Instalasi Kantor'],
+        (object)[
+            'tanggal' => '2026-02-06',
+            'kode_barang' => 'BRG-001',
+            'nama_barang' => 'Aqua',
+            'customer' => 'Toko Sejahtera',
+            'jumlah' => 20,
+            'keterangan' => 'Pesanan Rutin'
+        ],
+        (object)[
+            'tanggal' => '2026-02-06',
+            'kode_barang' => 'BRG-003',
+            'nama_barang' => 'Switch Hub 24 Port',
+            'customer' => 'PT. Teknologi Maju',
+            'jumlah' => 1,
+            'keterangan' => 'Instalasi Kantor'
+        ],
     ];
 
-    // Dummy untuk pilihan barang dari Master
     $masterBarang = [
         (object)['id' => 1, 'kode' => 'BRG-001', 'nama' => 'Aqua', 'stok' => 80],
         (object)['id' => 3, 'kode' => 'BRG-003', 'nama' => 'Switch Hub 24 Port', 'stok' => 5],
@@ -19,106 +31,158 @@
 @endphp
 
 <div class="space-y-6">
-    
+
+    {{-- FORM BARANG KELUAR --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <div class="flex items-center gap-2 mb-6">
-            <div class="bg-orange-100 p-2 rounded-lg text-orange-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+            <div class="bg-purple-100 p-2 rounded-lg text-purple-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                </svg>
             </div>
-            <h3 class="text-lg font-bold text-slate-800">Input Barang Keluar</h3>
+            <h3 class="text-lg font-bold text-slate-800 tracking-tight">
+                Input Barang Keluar
+            </h3>
         </div>
 
         <form action="#" method="POST">
             @csrf
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+
                 <div>
-                    <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Tanggal</label>
-                    <input type="date" name="tanggal" value="{{ date('Y-m-d') }}" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-100 focus:border-orange-400 outline-none transition text-sm">
+                    <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
+                        Tanggal
+                    </label>
+                    <input type="date" value="{{ date('Y-m-d') }}"
+                           class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Pilih Barang</label>
-                    <select name="barang_id" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-100 focus:border-orange-400 outline-none transition text-sm">
+                    <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
+                        Barang
+                    </label>
+                    <select class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
                         <option value="">-- Pilih Barang --</option>
                         @foreach($masterBarang as $b)
-                            <option value="{{ $b->id }}">{{ $b->kode }} - {{ $b->nama }} (Sisa: {{ $b->stok }})</option>
+                            <option>
+                                {{ $b->kode }} - {{ $b->nama }} (Stok: {{ $b->stok }})
+                            </option>
                         @endforeach
                     </select>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Customer</label>
-                    <select name="customer" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-100 focus:border-orange-400 outline-none transition text-sm">
-                        <option value="">-- Pilih Customer --</option>
-                        <option value="1">Toko Sejahtera</option>
-                        <option value="2">PT. Teknologi Maju</option>
-                    </select>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
+                        Customer
+                    </label>
+                    <input type="text" placeholder="Nama customer"
+                           class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Jumlah Keluar</label>
-                    <input type="number" name="jumlah" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-100 focus:border-orange-400 outline-none transition text-sm" placeholder="0">
+                    <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
+                        Jumlah
+                    </label>
+                    <input type="number" placeholder="0"
+                           class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
                 </div>
+
             </div>
 
             <div class="mt-4">
-                <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Keterangan</label>
-                <textarea name="keterangan" rows="2" class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-100 focus:border-orange-400 outline-none transition text-sm" placeholder="Contoh: Kirim via JNE / Diambil sendiri"></textarea>
+                <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
+                    Keterangan
+                </label>
+                <textarea rows="2" placeholder="Opsional"
+                          class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></textarea>
             </div>
 
             <div class="mt-6">
-                <button type="submit" class="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg text-sm font-semibold transition shadow-md shadow-orange-100">
+                <button type="submit"
+                        class="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-semibold transition">
                     Simpan Barang Keluar
                 </button>
             </div>
         </form>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div class="p-6 border-b border-gray-50 flex justify-between items-center bg-white">
+    {{-- SEARCH BARANG KELUAR --}}
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center justify-between mb-4">
             <div class="flex items-center gap-2">
-                <span class="text-xl">📄</span>
-                <h3 class="text-lg font-bold text-slate-800">Riwayat Barang Keluar</h3>
+                <div class="bg-blue-100 p-2 rounded-lg text-blue-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 tracking-tight">
+                    Cari Barang Keluar
+                </h3>
             </div>
-            <button class="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+
+            <button class="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 10v6m0 0l-3-3m3 3l3-3"/>
+                </svg>
                 Export Excel
             </button>
         </div>
 
+        <form action="#" method="GET" class="flex gap-3">
+            <div class="flex-1">
+                <input type="text"
+                       placeholder="Cari berdasarkan nama barang, kode, atau customer..."
+                       class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+
+            <button type="submit"
+                    class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-semibold transition">
+                Cari
+            </button>
+        </form>
+    </div>
+
+    {{-- TABEL RIWAYAT --}}
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-left">
-                <thead class="bg-orange-50 text-orange-800 text-xs uppercase tracking-widest font-bold">
-                    <tr>
-                        <th class="px-6 py-4 border-b border-orange-100">No</th>
-                        <th class="px-6 py-4 border-b border-orange-100">Tanggal</th>
-                        <th class="px-6 py-4 border-b border-orange-100">Kode Barang</th>
-                        <th class="px-6 py-4 border-b border-orange-100">Nama Barang</th>
-                        <th class="px-6 py-4 border-b border-orange-100">Customer</th>
-                        <th class="px-6 py-4 border-b border-orange-100 text-center">Jumlah</th>
-                        <th class="px-6 py-4 border-b border-orange-100">Keterangan</th>
-                    </tr>
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-emerald-50 text-emerald-700 text-sm uppercase">
+                <tr>
+                    <th class="p-4">No</th>
+                    <th class="p-4">Tanggal</th>
+                    <th class="p-4">Kode</th>
+                    <th class="p-4">Nama Barang</th>
+                    <th class="p-4">Customer</th>
+                    <th class="p-4 text-right">Jumlah</th>
+                    <th class="p-4">Keterangan</th>
+                </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-50">
-                    @forelse($dummyOutHistory as $index => $item)
+
+                <tbody class="divide-y divide-gray-100">
+                @forelse($dummyOutHistory as $i => $row)
                     <tr class="hover:bg-gray-50 transition">
-                        <td class="px-6 py-4 text-sm font-bold text-gray-500">{{ $index + 1 }}</td>
-                        <td class="px-6 py-4 text-sm font-bold text-gray-600">{{ $item->tanggal }}</td>
-                        <td class="px-6 py-4 text-sm font-bold text-gray-700">{{ $item->kode_barang }}</td>
-                        <td class="px-6 py-4 text-sm font-bold text-slate-800">{{ $item->nama_barang }}</td>
-                        <td class="px-6 py-4 text-sm font-bold text-gray-600">{{ $item->customer }}</td>
-                        <td class="px-6 py-4 text-sm font-bold text-center"> {{ $item->jumlah }}</td>
-                        <td class="px-6 py-4 text-sm font-bold text-gray-500 italic">{{ $item->keterangan }}</td>
+                        <td class="p-4 text-sm text-gray-600">{{ $i + 1 }}</td>
+                        <td class="p-4 text-sm text-gray-600">{{ $row->tanggal }}</td>
+                        <td class="p-4 text-sm font-mono text-slate-700">{{ $row->kode_barang }}</td>
+                        <td class="p-4 text-sm font-medium text-slate-800">{{ $row->nama_barang }}</td>
+                        <td class="p-4 text-sm text-slate-600">{{ $row->customer }}</td>
+                        <td class="p-4 text-sm font-bold text-right text-slate-800">{{ $row->jumlah }}</td>
+                        <td class="p-4 text-sm text-gray-500 italic">{{ $row->keterangan }}</td>
                     </tr>
-                    @empty
+                @empty
                     <tr>
-                        <td colspan="7" class="px-6 py-12 text-center text-gray-400">Belum ada riwayat barang keluar</td>
+                        <td colspan="7" class="p-8 text-center text-gray-400">
+                            Belum ada data barang keluar
+                        </td>
                     </tr>
-                    @endforelse
+                @endforelse
                 </tbody>
             </table>
         </div>
     </div>
-</div>
 
+</div>
 @endsection
