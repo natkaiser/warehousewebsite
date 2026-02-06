@@ -1,10 +1,44 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>FIRST CHANGES</title>
+    <title>{{ $title ?? 'Warehouse System' }} - Toko Sekolah</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        
+        @keyframes slideInTop {
+            from {
+                opacity: 0;
+                transform: translateY(-1rem);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideOutTop {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-1rem);
+            }
+        }
+        
+        .animate-in {
+            animation: slideInTop 0.3s ease-out;
+        }
+        
+        .animate-out {
+            animation: slideOutTop 0.3s ease-out;
+        }
+    </style>
 </head>
 <body class="bg-gray-50 text-slate-800">
 
@@ -131,4 +165,3 @@
 
 </body>
 </html>
-
