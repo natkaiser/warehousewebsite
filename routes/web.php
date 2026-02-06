@@ -25,6 +25,7 @@ Route::get('/stockkeluar', function () {
 });
 
 Route::get('/supplier', [SupplierController::class, 'index'])->name('supplier.index');
+Route::get('/supplier/export/pdf', [SupplierController::class, 'exportPdf'])->name('supplier.export.pdf');
 Route::post('/supplier', [SupplierController::class, 'store'])->name('supplier.store');
 Route::put('/supplier/{supplier}', [SupplierController::class, 'update'])->name('supplier.update');
 Route::delete('/supplier/{supplier}', [SupplierController::class, 'destroy'])->name('supplier.destroy');

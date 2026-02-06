@@ -5,8 +5,21 @@
 @section('content')
 
 <div class="space-y-6">
+    {{-- FLASH MESSAGE SUCCESS --}}
+    @if (session('success'))
+        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded-lg" role="alert">
+            <p class="font-bold">Berhasil!</p>
+            <p class="text-sm">{{ session('success') }}</p>
+        </div>
+    @endif
 
-
+    {{-- FLASH MESSAGE ERROR --}}
+    @if (session('error'))
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg" role="alert">
+            <p class="font-bold">Error!</p>
+            <p class="text-sm">{{ session('error') }}</p>
+        </div>
+    @endif
 
     {{-- FORM TAMBAH BARANG --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
@@ -135,18 +148,24 @@
                         {{-- AKSI --}}
                         <td class="p-4 text-center">
                             <div class="flex justify-center gap-2">
-                                <button onclick="openEditModal({{ $item->id }}, '{{ $item->kode_barang }}', '{{ $item->nama_barang }}', '{{ $item->spesifikasi }}', '{{ $item->satuan }}')" class="text-blue-500 hover:text-blue-700 p-1 bg-blue-50 rounded">
+                                {{-- EDIT --}}
+                                <button
+                                    onclick="openEditModal(
+                                        {{ $item->id }},
+                                        '{{ addslashes($item->kode_barang) }}',
+                                        '{{ addslashes($item->nama_barang) }}',
+                                        '{{ addslashes($item->spesifikasi) }}',
+                                        '{{ addslashes($item->satuan) }}'
+                                    )"
+                                    class="text-blue-500 hover:text-blue-700 p-1 bg-blue-50 rounded">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                               d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                                     </svg>
                                 </button>
 
-                                <form id="deleteForm" action="" method="POST" style="display:none;">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
-                                <button type="button" onclick="openDeleteModal({{ $item->id }}, '{{ $item->nama_barang }}')" class="text-red-500 hover:text-red-700 p-1 bg-red-50 rounded">
+                                {{-- DELETE --}}
+                                <button type="button" onclick="openDeleteModal({{ $item->id }}, '{{ addslashes($item->nama_barang) }}')" class="text-red-500 hover:text-red-700 p-1 bg-red-50 rounded">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                               d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
@@ -183,8 +202,14 @@
     </div>
 </div>
 
+{{-- HIDDEN DELETE FORM --}}
+<form id="deleteForm" action="" method="POST" style="display:none;">
+    @csrf
+    @method('DELETE')
+</form>
+
 {{-- MODAL EDIT BARANG --}}
-<div id="editModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 p-4">
+<div id="editModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50 p-4">
     <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
         <div class="flex items-center gap-2 mb-6">
             <div class="bg-blue-100 p-2 rounded-lg text-blue-600">
@@ -244,7 +269,7 @@
 </div>
 
 {{-- MODAL KONFIRMASI DELETE --}}
-<div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 p-4">
+<div id="deleteModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50 p-4">
     <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-sm">
         <div class="flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full mb-4">
             <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -281,6 +306,7 @@ function openEditModal(id, kodeBarang, namaBarang, spesifikasi, satuan) {
     form.action = '/stock/' + id;
     
     document.getElementById('editModal').classList.remove('hidden');
+    document.getElementById('editModal').classList.add('flex');
 }
 
 function closeEditModal() {
@@ -291,6 +317,7 @@ function openDeleteModal(id, namaBarang) {
     deleteItemId = id;
     document.getElementById('deleteItemName').textContent = namaBarang;
     document.getElementById('deleteModal').classList.remove('hidden');
+    document.getElementById('deleteModal').classList.add('flex');
 }
 
 function closeDeleteModal() {
@@ -302,8 +329,6 @@ function confirmDelete() {
     if (deleteItemId) {
         const form = document.getElementById('deleteForm');
         form.action = '/stock/' + deleteItemId;
-        
-        showAlert('Menghapus barang...', 'info', 0);
         form.submit();
     }
 }

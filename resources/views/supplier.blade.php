@@ -82,6 +82,52 @@
         </form>
     </div>
 
+    {{-- FORM CARI SUPPLIER --}}
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+                <div class="bg-blue-100 p-2 rounded-lg text-blue-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 tracking-tight">Cari Supplier</h3>
+            </div>
+            <button class="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition"
+                    onclick="window.location.href='{{ route('supplier.export.pdf') }}{{ $search ? '?search=' . urlencode($search) : '' }}'">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Export PDF
+            </button>
+        </div>
+
+        <form action="{{ route('supplier.index') }}" method="GET" class="flex gap-3">
+            <div class="flex-1">
+                <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari berdasarkan nama supplier, alamat, atau telepon..."
+                       class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-semibold transition">
+                Cari
+            </button>
+            @if($search)
+                <a href="{{ route('supplier.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg text-sm font-semibold transition">
+                    Reset
+                </a>
+            @endif
+        </form>
+
+        @if($search)
+            <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p class="text-sm text-blue-800">
+                    Hasil pencarian untuk: <span class="font-semibold">{{ $search }}</span>
+                    <span class="text-blue-600">({{ $suppliers->count() }} hasil ditemukan)</span>
+                </p>
+            </div>
+        @endif
+    </div>
+
     {{-- DAFTAR SUPPLIER --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         <div class="flex items-center justify-between p-6 border-b border-gray-100">
@@ -96,14 +142,6 @@
                     Daftar Supplier
                 </h3>
             </div>
-
-            <button class="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M12 10v6m0 0l-3-3m3 3l3-3"/>
-                </svg>
-                Export Excel
-            </button>
         </div>
 
         <div class="overflow-x-auto">
@@ -170,49 +208,84 @@
     </div>
 
 </div>
-{{-- MODAL EDIT --}}
-<div id="editModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
-    <div class="bg-white rounded-xl w-full max-w-md p-6">
-        <h3 class="text-lg font-bold mb-4">Edit Supplier</h3>
+{{-- MODAL EDIT SUPPLIER --}}
+<div id="editModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
+        <div class="flex items-center gap-2 mb-6">
+            <div class="bg-blue-100 p-2 rounded-lg text-blue-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                </svg>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800">Edit Supplier</h3>
+            <button onclick="closeEditModal()" class="ml-auto text-gray-500 hover:text-gray-700">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
 
         <form id="editForm" method="POST">
             @csrf
             @method('PUT')
 
             <div class="space-y-4">
-                <input id="editNama" name="nama" class="w-full px-3 py-2 border rounded-lg">
-                <input id="editAlamat" name="alamat" class="w-full px-3 py-2 border rounded-lg">
-                <input id="editTelepon" name="telepon" class="w-full px-3 py-2 border rounded-lg">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Nama Supplier</label>
+                    <input type="text" id="editNama" name="nama" required
+                           class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Alamat</label>
+                    <input type="text" id="editAlamat" name="alamat" required
+                           class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Telepon</label>
+                    <input type="text" id="editTelepon" name="telepon" required
+                           class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
             </div>
 
-            <div class="flex justify-end gap-2 mt-6">
-                <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-gray-300 rounded-lg">
-                    Batal
+            <div class="flex gap-3 mt-6">
+                <button type="submit" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
+                    Simpan Perubahan
                 </button>
-                <button class="px-4 py-2 bg-indigo-500 text-white rounded-lg">
-                    Simpan
+                <button type="button" onclick="closeEditModal()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-semibold transition">
+                    Batal
                 </button>
             </div>
         </form>
     </div>
 </div>
 
-{{-- MODAL DELETE --}}
-<div id="deleteModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50">
-    <div class="bg-white rounded-xl w-full max-w-sm p-6 text-center">
-        <h3 class="text-lg font-bold mb-2">Hapus Supplier?</h3>
-        <p id="deleteName" class="text-gray-500 mb-4"></p>
+{{-- MODAL KONFIRMASI DELETE --}}
+<div id="deleteModal" class="fixed inset-0 bg-black/40 hidden items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl shadow-lg p-6 w-full max-w-sm">
+        <div class="flex items-center justify-center w-12 h-12 mx-auto bg-red-100 rounded-full mb-4">
+            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+            </svg>
+        </div>
+        
+        <h3 class="text-lg font-bold text-center text-slate-800 mb-2">Hapus Supplier?</h3>
+        <p class="text-center text-gray-600 text-sm mb-6">
+            Apakah Anda yakin ingin menghapus supplier <span id="deleteName" class="font-semibold text-slate-800"></span>? Tindakan ini tidak dapat dibatalkan.
+        </p>
 
         <form id="deleteForm" method="POST">
             @csrf
             @method('DELETE')
 
-            <div class="flex justify-center gap-3">
-                <button type="button" onclick="closeDeleteModal()" class="px-4 py-2 bg-gray-300 rounded-lg">
+            <div class="flex gap-3">
+                <button type="button" onclick="closeDeleteModal()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-semibold transition">
                     Batal
                 </button>
-                <button class="px-4 py-2 bg-red-500 text-white rounded-lg">
-                    Hapus
+                <button class="flex-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
+                    Ya, Hapus
                 </button>
             </div>
         </form>
@@ -220,30 +293,54 @@
 </div>
 <script>
     function openEditModal(id, nama, alamat, telepon) {
-        editModal.classList.remove('hidden')
-        editModal.classList.add('flex')
-
-        editNama.value = nama
-        editAlamat.value = alamat
-        editTelepon.value = telepon
-        editForm.action = `/supplier/${id}`
+        document.getElementById('editNama').value = nama;
+        document.getElementById('editAlamat').value = alamat;
+        document.getElementById('editTelepon').value = telepon;
+        
+        const form = document.getElementById('editForm');
+        form.action = '/supplier/' + id;
+        
+        document.getElementById('editModal').classList.remove('hidden');
+        document.getElementById('editModal').classList.add('flex');
     }
 
     function closeEditModal() {
-        editModal.classList.add('hidden')
+        document.getElementById('editModal').classList.add('hidden');
     }
 
     function openDeleteModal(id, nama) {
-        deleteModal.classList.remove('hidden')
-        deleteModal.classList.add('flex')
-
-        deleteName.innerText = nama
-        deleteForm.action = `/supplier/${id}`
+        document.getElementById('deleteName').textContent = nama;
+        document.getElementById('deleteModal').classList.remove('hidden');
+        document.getElementById('deleteModal').classList.add('flex');
+        
+        const form = document.getElementById('deleteForm');
+        form.action = '/supplier/' + id;
     }
 
     function closeDeleteModal() {
-        deleteModal.classList.add('hidden')
+        document.getElementById('deleteModal').classList.add('hidden');
     }
+
+    // Close modal when clicking outside
+    document.getElementById('editModal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeEditModal();
+        }
+    });
+
+    document.getElementById('deleteModal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeDeleteModal();
+        }
+    });
+
+    // Handle keyboard events
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeEditModal();
+            closeDeleteModal();
+        }
+    });
 </script>
 
 @endsection
