@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Supplier;
+use App\Exports\SuppliersPDF;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -59,24 +60,23 @@ class SupplierController extends Controller
     public function exportPdf(Request $request)
     {
         $search = $request->input('search', '');
-        
-        $query = Supplier::oldest();
-        
+
+        $query = Supplier::latest();
+
         if ($search) {
             $query->where('nama', 'like', '%' . $search . '%')
                   ->orWhere('alamat', 'like', '%' . $search . '%')
                   ->orWhere('telepon', 'like', '%' . $search . '%');
         }
-        
+
         $suppliers = $query->get();
-        
-        $pdf = Pdf::loadView('pdf.supplier', ['suppliers' => $suppliers])
-                  ->setPaper('a4')
-                  ->setOption('margin-top', 10)
-                  ->setOption('margin-bottom', 10)
-                  ->setOption('margin-left', 10)
-                  ->setOption('margin-right', 10);
-        
-        return $pdf->download('daftar-supplier-' . date('Y-m-d') . '.pdf');
+
+        $pdfData = new SuppliersPDF($suppliers);
+        $data = $pdfData->generate();
+
+        $pdf = Pdf::loadView('pdf.supplier', $data)
+                  ->setPaper('a4');
+
+        return $pdf->download('daftar-supplier-' . date('d-m-Y_H-i-s') . '.pdf');
     }
 }

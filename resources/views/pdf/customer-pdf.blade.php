@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Laporan Supplier</title>
+    <title>Laporan Customer</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; color: #333; }
         .header { text-align: center; margin-bottom: 30px; border-bottom: 3px solid #2c3e50; padding-bottom: 15px; }
@@ -22,13 +22,13 @@
 </head>
 <body>
     <div class="header">
-        <h1>LAPORAN DAFTAR SUPPLIER</h1>
+        <h1>LAPORAN DAFTAR CUSTOMER</h1>
         <p>Dicetak pada: {{ $tanggal }}</p>
     </div>
 
     <div class="info">
         <div class="info-row">
-            <span><strong>Total Supplier:</strong> {{ $total_items }}</span>
+            <span><strong>Total Customer:</strong> {{ $total_items }}</span>
             <span><strong>Status:</strong> Aktif</span>
         </div>
     </div>
@@ -43,16 +43,16 @@
             </tr>
         </thead>
         <tbody>
-            @forelse($suppliers as $index => $s)
+            @forelse($customers as $index => $c)
                 <tr>
                     <td class="text-center">{{ $index + 1 }}</td>
-                    <td>{{ $s->nama }}</td>
-                    <td>{{ $s->alamat }}</td>
-                    <td>{{ $s->telepon }}</td>
+                    <td>{{ $c->nama }}</td>
+                    <td>{{ $c->alamat }}</td>
+                    <td>{{ $c->telepon }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="4" class="text-center" style="color:#999;">Tidak ada data supplier</td>
+                    <td colspan="4" class="text-center" style="color:#999;">Tidak ada data customer</td>
                 </tr>
             @endforelse
         </tbody>

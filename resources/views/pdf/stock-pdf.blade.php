@@ -106,7 +106,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>📊 LAPORAN STOCK BARANG</h1>
+        <h1>LAPORAN STOCK BARANG</h1>
         <p>Dicetak pada: {{ $tanggal }}</p>
     </div>
     

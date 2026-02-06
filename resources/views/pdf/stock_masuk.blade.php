@@ -106,7 +106,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>📦 LAPORAN BARANG MASUK</h1>
+        <h1>LAPORAN BARANG MASUK</h1>
         <p>Dicetak pada: {{ date('d F Y H:i:s') }}</p>
     </div>
     
