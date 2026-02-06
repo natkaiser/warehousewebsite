@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Stock;
 use App\Exports\StocksExport;
+use App\Exports\StocksPDF;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf as DomPDF;
 
 class StockController extends Controller
 {
@@ -73,7 +75,7 @@ class StockController extends Controller
     public function export(Request $request)
     {
         $search = $request->input('search', '');
-        $filename = 'Stock_Barang_' . date('d-m-Y_H-i-s') . '.xlsx';
+        $filename = 'Stock_Barang_' . date('d-m-Y_H-i-s') . '.pdf';
 
         $query = Stock::latest();
         
@@ -85,6 +87,17 @@ class StockController extends Controller
 
         $stocks = $query->get();
 
-        return Excel::download(new StocksExport($stocks), $filename);
+        $pdfData = new StocksPDF($stocks);
+        $data = $pdfData->generate();
+
+        $pdf = DomPDF::loadView('pdf.stock-pdf', $data)
+                     ->setPaper('a4', 'landscape')
+                     ->setOptions([
+                         'isHtml5ParserEnabled' => true,
+                         'isPhpEnabled' => true,
+                         'dpi' => 150,
+                     ]);
+
+        return $pdf->download($filename);
     }
 }
