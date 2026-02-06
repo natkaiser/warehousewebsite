@@ -69,11 +69,11 @@
                 </div>
                 <h3 class="text-lg font-bold text-slate-800 tracking-tight">Cari Barang</h3>
             </div>
-            <button onclick="downloadExcel()" class="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
+            <button onclick="downloadPDF()" class="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                 </svg>
-                Export Excel
+                Export PDF
             </button>
         </div>
 
@@ -329,8 +329,8 @@ document.addEventListener('keydown', function(e) {
     }
 });
 
-// Fungsi export excel
-function downloadExcel() {
+// Fungsi export PDF
+function downloadPDF() {
     const search = document.querySelector('input[name="search"]').value;
     let url = '{{ route("stock.export") }}';
     
@@ -338,11 +338,11 @@ function downloadExcel() {
         url += '?search=' + encodeURIComponent(search);
     }
     
-    showAlert('Mengunduh file Excel...', 'info', 0);
+    showAlert('Mengunduh file PDF...', 'info', 0);
     window.location.href = url;
     
     setTimeout(() => {
-        showAlert('File berhasil diunduh!', 'success', 3000);
+        showAlert('File PDF berhasil diunduh!', 'success', 3000);
     }, 1000);
 }
 </script>

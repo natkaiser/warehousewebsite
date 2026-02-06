@@ -7,7 +7,7 @@ use App\Exports\StocksExport;
 use App\Exports\StocksPDF;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
-use Barryvdh\DomPDF\Facade\Pdf as DomPDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class StockController extends Controller
 {
@@ -90,13 +90,8 @@ class StockController extends Controller
         $pdfData = new StocksPDF($stocks);
         $data = $pdfData->generate();
 
-        $pdf = DomPDF::loadView('pdf.stock-pdf', $data)
-                     ->setPaper('a4', 'landscape')
-                     ->setOptions([
-                         'isHtml5ParserEnabled' => true,
-                         'isPhpEnabled' => true,
-                         'dpi' => 150,
-                     ]);
+        $pdf = Pdf::loadView('pdf.stock-pdf', $data)
+                  ->setPaper('a4', 'landscape');
 
         return $pdf->download($filename);
     }
