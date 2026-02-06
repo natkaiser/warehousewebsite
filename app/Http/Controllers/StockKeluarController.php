@@ -2,33 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Stock;
 use App\Models\Customer;
+use App\Models\Stock;
 use App\Models\StockKeluar;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class StockKeluarController extends Controller
 {
     public function index(Request $request)
     {
-        $stocks = Stock::orderBy('nama_barang')->get();
-        $customers = Customer::orderBy('nama')->get();
+        $masterBarang = Stock::where('stok', '>', 0)->get();
+        $customers = Customer::all();
 
         $history = StockKeluar::with(['stock', 'customer'])
-            ->when($request->search, function ($q) use ($request) {
-                $q->whereHas('stock', function ($s) use ($request) {
-                    $s->where('nama_barang', 'like', "%{$request->search}%")
-                      ->orWhere('kode_barang', 'like', "%{$request->search}%");
-                })
-                ->orWhereHas('customer', function ($c) use ($request) {
-                    $c->where('nama', 'like', "%{$request->search}%");
+            ->when($request->filled('search') && trim($request->search), function ($q) use ($request) {
+                $search = trim($request->search);
+                $q->where(function($query) use ($search) {
+                    $query->whereHas('stock', function ($s) use ($search) {
+                        $s->whereRaw('LOWER(nama_barang) LIKE LOWER(?)', ["%{$search}%"])
+                          ->orWhereRaw('LOWER(kode_barang) LIKE LOWER(?)', ["%{$search}%"]);
+                    })
+                    ->orWhereHas('customer', function ($s) use ($search) {
+                        $s->whereRaw('LOWER(nama) LIKE LOWER(?)', ["%{$search}%"]);
+                    });
                 });
             })
             ->latest()
             ->get();
 
-        return view('stockkeluar', compact('stocks', 'customers', 'history'));
+        return view('stockkeluar', compact('history', 'masterBarang', 'customers'));
     }
 
     public function store(Request $request)
@@ -38,29 +41,50 @@ class StockKeluarController extends Controller
             'stock_id' => 'required|exists:stocks,id',
             'customer_id' => 'required|exists:customers,id',
             'jumlah' => 'required|integer|min:1',
+            'keterangan' => 'nullable|string',
         ]);
 
-        DB::transaction(function () use ($request) {
+        $stock = Stock::findOrFail($request->stock_id);
 
-            $stock = Stock::lockForUpdate()->findOrFail($request->stock_id);
+        if ($stock->stok < $request->jumlah) {
+            return back()->withErrors(['jumlah' => 'Stok tidak mencukupi.']);
+        }
 
-            // ❌ STOP JIKA STOK HABIS / KURANG
-            if ($stock->stok <= 0) {
-                abort(400, 'Stok habis');
-            }
+        StockKeluar::create([
+            'tanggal' => $request->tanggal,
+            'stock_id' => $request->stock_id,
+            'customer_id' => $request->customer_id,
+            'jumlah' => $request->jumlah,
+            'keterangan' => $request->keterangan,
+        ]);
 
-            if ($request->jumlah > $stock->stok) {
-                abort(400, 'Jumlah melebihi stok tersedia');
-            }
+        $stock->decrement('stok', $request->jumlah);
 
-            // 1️⃣ SIMPAN BARANG KELUAR
-            StockKeluar::create($request->all());
+        return back()->with('success', 'Barang keluar berhasil ditambahkan.');
+    }
 
-            // 2️⃣ KURANGI STOK
-            $stock->stok -= $request->jumlah;
-            $stock->save();
-        });
+    public function exportPdf(Request $request)
+    {
+        $history = StockKeluar::with(['stock', 'customer'])
+            ->when($request->filled('search') && trim($request->search), function ($q) use ($request) {
+                $search = trim($request->search);
+                $q->where(function($query) use ($search) {
+                    $query->whereHas('stock', function ($s) use ($search) {
+                        $s->whereRaw('LOWER(nama_barang) LIKE LOWER(?)', ["%{$search}%"])
+                          ->orWhereRaw('LOWER(kode_barang) LIKE LOWER(?)', ["%{$search}%"]);
+                    })
+                    ->orWhereHas('customer', function ($s) use ($search) {
+                        $s->whereRaw('LOWER(nama) LIKE LOWER(?)', ["%{$search}%"]);
+                    });
+                });
+            })
+            ->latest()
+            ->get();
 
-        return redirect()->back()->with('success', 'Barang keluar berhasil & stok berkurang');
+        $pdf = Pdf::loadView('pdf.stock_keluar', ['history' => $history, 'search' => $request->search])
+                   ->setPaper('a4', 'landscape');
+
+        $filename = 'Stock_Keluar_' . date('Y-m-d_His') . '.pdf';
+        return $pdf->download($filename);
     }
 }

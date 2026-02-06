@@ -25,10 +25,9 @@ Route::post('/stock-masuk', [StockMasukController::class, 'store'])->name('stock
 Route::get('/stockmasuk', function () {return redirect()->route('stockmasuk.index');});
 
 Route::get('/stock-keluar', [StockKeluarController::class, 'index'])->name('stockkeluar.index');
+Route::get('/stock-keluar/export/pdf', [StockKeluarController::class, 'exportPdf'])->name('stockkeluar.export.pdf');
 Route::post('/stock-keluar', [StockKeluarController::class, 'store'])->name('stockkeluar.store');
-Route::get('/stockkeluar', function () {
-    return view('stockkeluar');
-});
+Route::get('/stockkeluar', [StockKeluarController::class, 'index']);
 
 Route::get('/supplier', [SupplierController::class, 'index'])->name('supplier.index');
 Route::get('/supplier/export/pdf', [SupplierController::class, 'exportPdf'])->name('supplier.export.pdf');
@@ -41,3 +40,11 @@ Route::get('/customer/export/pdf', [CustomerController::class, 'exportPdf'])->na
 Route::post('/customer', [CustomerController::class, 'store'])->name('customer.store');
 Route::put('/customer/{customer}', [CustomerController::class, 'update'])->name('customer.update');
 Route::delete('/customer/{customer}', [CustomerController::class, 'destroy'])->name('customer.destroy');
+
+Route::get('/admin/dashboard', function () {
+    return view('admin.dashboard');
+})->middleware(['auth', 'verified'])->name('admin.dashboard');
+
+Route::get('/dashboard', function () {
+    return redirect('/admin/dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');

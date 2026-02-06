@@ -17,15 +17,15 @@ class StockMasukController extends Controller
         $suppliers = Supplier::orderBy('nama')->get();
 
         $history = StockMasuk::with(['stock', 'supplier'])
-            ->when($request->search, function ($q) use ($request) {
-                $search = $request->search;
+            ->when($request->filled('search') && trim($request->search), function ($q) use ($request) {
+                $search = trim($request->search);
                 $q->where(function($query) use ($search) {
                     $query->whereHas('stock', function ($s) use ($search) {
-                        $s->where('nama_barang', 'like', "%{$search}%")
-                          ->orWhere('kode_barang', 'like', "%{$search}%");
+                        $s->whereRaw('LOWER(nama_barang) LIKE LOWER(?)', ["%{$search}%"])
+                          ->orWhereRaw('LOWER(kode_barang) LIKE LOWER(?)', ["%{$search}%"]);
                     })
                     ->orWhereHas('supplier', function ($s) use ($search) {
-                        $s->where('nama', 'like', "%{$search}%");
+                        $s->whereRaw('LOWER(nama) LIKE LOWER(?)', ["%{$search}%"]);
                     });
                 });
             })
