@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\SupplierController;
 
 Route::get('/', function () {
     return view('index');
@@ -23,7 +24,7 @@ Route::get('/stockkeluar', function () {
     return view('stockkeluar');
 });
 
-Route::get('/supplier', function () {
-    return view('supplier');
-});
-
+Route::get('/supplier', [SupplierController::class, 'index'])->name('supplier.index');
+Route::post('/supplier', [SupplierController::class, 'store'])->name('supplier.store');
+Route::put('/supplier/{supplier}', [SupplierController::class, 'update'])->name('supplier.update');
+Route::delete('/supplier/{supplier}', [SupplierController::class, 'destroy'])->name('supplier.destroy');

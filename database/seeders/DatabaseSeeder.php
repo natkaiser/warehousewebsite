@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
+use App\Models\Supplier;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -20,6 +21,25 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+        ]);
+
+        // Seed sample suppliers
+        Supplier::create([
+            'nama' => 'PT Sumber Air',
+            'alamat' => 'Jakarta',
+            'telepon' => '021-123456',
+        ]);
+
+        Supplier::create([
+            'nama' => 'CV Bahan Baku Utama',
+            'alamat' => 'Bandung',
+            'telepon' => '022-987654',
+        ]);
+
+        Supplier::create([
+            'nama' => 'PT Pabrik Terpercaya',
+            'alamat' => 'Surabaya',
+            'telepon' => '031-555555',
         ]);
     }
 }
