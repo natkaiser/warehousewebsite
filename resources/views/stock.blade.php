@@ -6,6 +6,8 @@
 
 <div class="space-y-6">
 
+
+
     {{-- FORM TAMBAH BARANG --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <div class="flex items-center gap-2 mb-6">
@@ -53,6 +55,51 @@
                 </button>
             </div>
         </form>
+    </div>
+
+        {{-- FORM CARI BARANG --}}
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+                <div class="bg-blue-100 p-2 rounded-lg text-blue-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 tracking-tight">Cari Barang</h3>
+            </div>
+            <button onclick="downloadExcel()" class="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Export Excel
+            </button>
+        </div>
+
+        <form action="{{ route('stock.index') }}" method="GET" class="flex gap-3">
+            <div class="flex-1">
+                <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari berdasarkan nama barang, kode, atau spesifikasi..."
+                       class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-semibold transition">
+                Cari
+            </button>
+            @if($search)
+                <a href="{{ route('stock.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg text-sm font-semibold transition">
+                    Reset
+                </a>
+            @endif
+        </form>
+
+        @if($search)
+            <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                <p class="text-sm text-blue-800">
+                    Hasil pencarian untuk: <span class="font-semibold">{{ $search }}</span>
+                    <span class="text-blue-600">({{ $stocks->count() }} hasil ditemukan)</span>
+                </p>
+            </div>
+        @endif
     </div>
 
     {{-- TABEL DATA --}}
@@ -110,8 +157,23 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="p-6 text-center text-gray-500">
-                            Data barang masih kosong
+                        <td colspan="7" class="p-8 text-center">
+                            <div class="flex flex-col items-center gap-3">
+                                <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+                                </svg>
+                                <p class="text-gray-500">
+                                    @if($search)
+                                        Barang dengan nama "<span class="font-semibold">{{ $search }}</span>" tidak ditemukan
+                                    @else
+                                        Data barang masih kosong
+                                    @endif
+                                </p>
+                                @if($search)
+                                    <p class="text-sm text-gray-400">Coba gunakan kata kunci lain</p>
+                                @endif
+                            </div>
                         </td>
                     </tr>
                 @endforelse
@@ -266,5 +328,22 @@ document.addEventListener('keydown', function(e) {
         closeDeleteModal();
     }
 });
+
+// Fungsi export excel
+function downloadExcel() {
+    const search = document.querySelector('input[name="search"]').value;
+    let url = '{{ route("stock.export") }}';
+    
+    if (search) {
+        url += '?search=' + encodeURIComponent(search);
+    }
+    
+    showAlert('Mengunduh file Excel...', 'info', 0);
+    window.location.href = url;
+    
+    setTimeout(() => {
+        showAlert('File berhasil diunduh!', 'success', 3000);
+    }, 1000);
+}
 </script>
 @endsection

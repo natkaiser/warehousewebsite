@@ -3,14 +3,26 @@
 namespace App\Http\Controllers;
 
 use App\Models\Stock;
+use App\Exports\StocksExport;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class StockController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $stocks = Stock::latest()->get();
-        return view('stock', compact('stocks'));
+        $search = $request->input('search', '');
+        
+        $query = Stock::latest();
+        
+        if ($search) {
+            $query->where('nama_barang', 'like', '%' . $search . '%')
+                  ->orWhere('kode_barang', 'like', '%' . $search . '%')
+                  ->orWhere('spesifikasi', 'like', '%' . $search . '%');
+        }
+        
+        $stocks = $query->get();
+        return view('stock', compact('stocks', 'search'));
     }
 
     public function store(Request $request)
@@ -56,5 +68,23 @@ class StockController extends Controller
     {
         $stock->delete();
         return redirect()->back()->with('success', 'Barang berhasil dihapus');
+    }
+
+    public function export(Request $request)
+    {
+        $search = $request->input('search', '');
+        $filename = 'Stock_Barang_' . date('d-m-Y_H-i-s') . '.xlsx';
+
+        $query = Stock::latest();
+        
+        if ($search) {
+            $query->where('nama_barang', 'like', '%' . $search . '%')
+                  ->orWhere('kode_barang', 'like', '%' . $search . '%')
+                  ->orWhere('spesifikasi', 'like', '%' . $search . '%');
+        }
+
+        $stocks = $query->get();
+
+        return Excel::download(new StocksExport($stocks), $filename);
     }
 }

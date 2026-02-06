@@ -9,6 +9,7 @@ Route::get('/', function () {
 
 
 Route::get('/stock', [StockController::class, 'index'])->name('stock.index');
+Route::get('/stock/export', [StockController::class, 'export'])->name('stock.export');
 Route::post('/stock', [StockController::class, 'store'])->name('stock.store');
 Route::put('/stock/{stock}', [StockController::class, 'update'])->name('stock.update');
 Route::delete('/stock/{stock}', [StockController::class, 'destroy'])->name('stock.destroy');
