@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StockController;
+use App\Http\Controllers\StockMasukController;
 use App\Http\Controllers\SupplierController;
 
 Route::get('/', function () {
@@ -16,8 +17,13 @@ Route::put('/stock/{stock}', [StockController::class, 'update'])->name('stock.up
 Route::delete('/stock/{stock}', [StockController::class, 'destroy'])->name('stock.destroy');
 
 
+Route::get('/stock-masuk', [StockMasukController::class, 'index'])->name('stockmasuk.index');
+Route::get('/stock-masuk/export/pdf', [StockMasukController::class, 'exportPdf'])->name('stockmasuk.export.pdf');
+Route::post('/stock-masuk', [StockMasukController::class, 'store'])->name('stockmasuk.store');
+
+// Compatibility route: some links use /stockmasuk (no dash)
 Route::get('/stockmasuk', function () {
-    return view('stockmasuk');
+    return redirect()->route('stockmasuk.index');
 });
 
 Route::get('/stockkeluar', function () {

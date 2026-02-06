@@ -4,32 +4,6 @@
 
 @section('content')
 
-@php
-    $dummyHistory = [
-        (object)[
-            'tanggal' => '2026-02-06',
-            'kode_barang' => 'BRG-001',
-            'nama_barang' => 'Aqua',
-            'supplier' => 'PT. Sumber Air',
-            'jumlah' => 100,
-            'keterangan' => 'Restock Mingguan'
-        ],
-        (object)[
-            'tanggal' => '2026-02-05',
-            'kode_barang' => 'BRG-002',
-            'nama_barang' => 'Chitato',
-            'supplier' => 'Indofood',
-            'jumlah' => 50,
-            'keterangan' => 'Barang Promo'
-        ],
-    ];
-
-    $masterBarang = [
-        (object)['id' => 1, 'kode' => 'BRG-001', 'nama' => 'Aqua'],
-        (object)['id' => 2, 'kode' => 'BRG-002', 'nama' => 'Chitato'],
-    ];
-@endphp
-
 <div class="space-y-6">
 
     {{-- FORM BARANG MASUK --}}
@@ -46,25 +20,25 @@
             </h3>
         </div>
 
-        <form action="#" method="POST">
+        <form action="{{ route('stockmasuk.store') }}" method="POST">
             @csrf
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
                         Tanggal
                     </label>
-                    <input type="date" value="{{ date('Y-m-d') }}"
-                           class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                    <input type="date" name="tanggal" value="{{ date('Y-m-d') }}"
+                           class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm" required>
                 </div>
 
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
                         Barang
                     </label>
-                    <select class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
-                        <option value="">-- Pilih Barang --</option>
-                        @foreach($masterBarang as $b)
-                            <option>{{ $b->kode }} - {{ $b->nama }}</option>
+                    <select name="stock_id" class="select2 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm" required>
+                        <option></option>
+                        @foreach($stocks as $b)
+                            <option value="{{ $b->id }}">{{ $b->kode_barang }} - {{ $b->nama_barang }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -73,16 +47,20 @@
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
                         Supplier
                     </label>
-                    <input type="text" placeholder="Nama supplier"
-                           class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                    <select name="supplier_id" class="select2 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm" required>
+                        <option></option>
+                        @foreach($suppliers as $s)
+                            <option value="{{ $s->id }}">{{ $s->nama }}</option>
+                        @endforeach
+                    </select>
                 </div>
 
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
                         Jumlah
                     </label>
-                    <input type="number" placeholder="0"
-                           class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                    <input type="number" name="jumlah" placeholder="0" min="1"
+                           class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm" required>
                 </div>
             </div>
 
@@ -90,7 +68,7 @@
                 <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
                     Keterangan
                 </label>
-                <textarea rows="2" placeholder="Opsional"
+                <textarea name="keterangan" rows="2" placeholder="Opsional"
                           class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></textarea>
             </div>
 
@@ -102,6 +80,21 @@
             </div>
         </form>
     </div>
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.jQuery && typeof jQuery().select2 === 'function') {
+                $('.select2').select2({
+                    placeholder: '-- Pilih Barang --',
+                    allowClear: true,
+                    width: '100%'
+                });
+            }
+        });
+    </script>
 
     {{-- SEARCH BARANG MASUK --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
@@ -118,19 +111,20 @@
                 </h3>
             </div>
 
-            <button class="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
+            <button onclick="window.location.href='{{ route('stockmasuk.export.pdf', ['search' => request('search')]) }}'" 
+                    class="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M12 10v6m0 0l-3-3m3 3l3-3"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                 </svg>
-                Export Excel
+                Export PDF
             </button>
         </div>
 
-        <form action="#" method="GET" class="flex gap-3">
+        <form action="{{ route('stockmasuk.index') }}" method="GET" class="flex gap-3">
             <div class="flex-1">
-                <input type="text"
+                <input type="text" name="search"
                        placeholder="Cari berdasarkan nama barang, kode, atau supplier..."
+                       value="{{ request('search') }}"
                        class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             </div>
             <button type="submit"
@@ -142,6 +136,18 @@
 
     {{-- TABEL RIWAYAT --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+            @if(request('search'))
+                <p class="text-sm text-gray-600">
+                    Hasil pencarian: <span class="font-bold text-slate-800">{{ $history->count() }}</span> data ditemukan
+                    <a href="{{ route('stockmasuk.index') }}" class="ml-3 text-blue-500 hover:text-blue-600 font-semibold">Reset</a>
+                </p>
+            @else
+                <p class="text-sm text-gray-600">
+                    Total: <span class="font-bold text-slate-800">{{ $history->count() }}</span> data
+                </p>
+            @endif
+        </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead class="bg-emerald-50 text-emerald-700 text-sm uppercase">
@@ -157,13 +163,13 @@
                 </thead>
 
                 <tbody class="divide-y divide-gray-100">
-                @forelse($dummyHistory as $i => $row)
+                @forelse($history as $i => $row)
                     <tr class="hover:bg-gray-50 transition">
                         <td class="p-4 text-sm text-gray-600">{{ $i + 1 }}</td>
                         <td class="p-4 text-sm text-gray-600">{{ $row->tanggal }}</td>
-                        <td class="p-4 text-sm font-mono text-slate-700">{{ $row->kode_barang }}</td>
-                        <td class="p-4 text-sm font-medium text-slate-800">{{ $row->nama_barang }}</td>
-                        <td class="p-4 text-sm text-slate-600">{{ $row->supplier }}</td>
+                        <td class="p-4 text-sm font-mono text-slate-700">{{ $row->stock->kode_barang }}</td>
+                        <td class="p-4 text-sm font-medium text-slate-800">{{ $row->stock->nama_barang }}</td>
+                        <td class="p-4 text-sm text-slate-600">{{ $row->supplier->nama }}</td>
                         <td class="p-4 text-sm font-bold text-right text-slate-800">{{ $row->jumlah }}</td>
                         <td class="p-4 text-sm text-gray-500 italic">{{ $row->keterangan }}</td>
                     </tr>
