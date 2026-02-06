@@ -80,8 +80,11 @@
                 <div class="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400">
                     <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold">JD</div>
                     <div class="text-sm">
-                        <p class="text-white font-medium">Admin Guru</p>
-                        <a href="#" class="text-xs text-red-400 hover:text-red-300">Keluar</a>
+                        <p class="text-white font-medium">{{ Auth::user()->name ?? 'Admin' }}</p>
+                        <form method="POST" action="{{ route('logout') }}" class="inline">
+                            @csrf
+                            <button type="submit" class="text-xs text-red-400 hover:text-red-300">Keluar</button>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -23,6 +23,32 @@ class CustomerController extends Controller
         return view('customer', compact('customers', 'search'));
     }
 
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama' => 'required',
+            'alamat' => 'required',
+            'telepon' => 'required',
+        ]);
+
+        Customer::create($request->all());
+
+        return back()->with('success', 'Customer ditambahkan');
+    }
+
+    public function update(Request $request, Customer $customer)
+    {
+        $request->validate([
+            'nama' => 'required',
+            'alamat' => 'required',
+            'telepon' => 'required',
+        ]);
+
+        $customer->update($request->all());
+
+        return back()->with('success', 'Customer diperbarui');
+    }
+
     public function exportPdf(Request $request)
     {
         $search = $request->input('search', '');
