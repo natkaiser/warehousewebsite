@@ -8,6 +8,36 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
+        
+        @keyframes slideInTop {
+            from {
+                opacity: 0;
+                transform: translateY(-1rem);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes slideOutTop {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-1rem);
+            }
+        }
+        
+        .animate-in {
+            animation: slideInTop 0.3s ease-out;
+        }
+        
+        .animate-out {
+            animation: slideOutTop 0.3s ease-out;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-slate-800">
@@ -59,6 +89,9 @@
                 
             </header>
 
+            {{-- ALERT NOTIFICATIONS --}}
+            <div id="alertContainer" class="fixed top-6 right-6 z-50 space-y-3 w-96"></div>
+
             <section class="p-8 flex-1">
                 @yield('content')
             </section>
@@ -68,6 +101,67 @@
             </footer>
         </main>
     </div>
+
+    <script>
+        // Function untuk menampilkan alert
+        function showAlert(message, type = 'success', duration = 4000) {
+            const alertContainer = document.getElementById('alertContainer');
+            
+            const icons = {
+                success: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>',
+                error: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>',
+                warning: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4v2m0 4v2M20.88 18.09A5 5 0 1 0 9.11 2m9.77 16.09A5 5 0 1 1 3.23 4m13.65 14.09a5 5 0 0 1-9.88-1.18m9.88 1.18a5 5 0 0 0-9.88-1.18"></path></svg>',
+                info: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>'
+            };
+            
+            const colors = {
+                success: { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-800', icon: 'text-green-500' },
+                error: { bg: 'bg-red-50', border: 'border-red-200', text: 'text-red-800', icon: 'text-red-500' },
+                warning: { bg: 'bg-yellow-50', border: 'border-yellow-200', text: 'text-yellow-800', icon: 'text-yellow-500' },
+                info: { bg: 'bg-blue-50', border: 'border-blue-200', text: 'text-blue-800', icon: 'text-blue-500' }
+            };
+            
+            const color = colors[type] || colors.success;
+            
+            const alert = document.createElement('div');
+            alert.className = `${color.bg} ${color.border} border rounded-lg shadow-lg p-4 flex items-start gap-3 animate-in fade-in slide-in-from-top-2 duration-300 max-w-sm`;
+            alert.innerHTML = `
+                <div class="${color.icon}">${icons[type]}</div>
+                <div class="flex-1">
+                    <p class="${color.text} font-semibold text-sm">${message}</p>
+                </div>
+                <button onclick="this.closest('div').remove()" class="${color.text} hover:opacity-70 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            `;
+            
+            alertContainer.appendChild(alert);
+            
+            if (duration > 0) {
+                setTimeout(() => {
+                    alert.classList.add('animate-out', 'fade-out', 'slide-out-to-top-2', 'duration-300');
+                    setTimeout(() => alert.remove(), 300);
+                }, duration);
+            }
+        }
+        
+        // Show session alerts
+        @if(session('success'))
+            showAlert('{{ session('success') }}', 'success', 4000);
+        @endif
+        
+        @if(session('error'))
+            showAlert('{{ session('error') }}', 'error', 5000);
+        @endif
+        
+        @if($errors->any())
+            @foreach($errors->all() as $error)
+                showAlert('{{ $error }}', 'error', 5000);
+            @endforeach
+        @endif
+    </script>
 
 </body>
 </html>
