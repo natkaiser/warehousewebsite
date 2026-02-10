@@ -22,7 +22,7 @@
 
         <form action="{{ route('stockmasuk.store') }}" method="POST">
             @csrf
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
                         Tanggal
@@ -30,6 +30,14 @@
                     <input type="date" name="tanggal" value="{{ date('Y-m-d') }}"
                            class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm" required>
                 </div>
+
+                {{-- <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
+                        Scan Kode Barang
+                    </label>
+                    <input type="text" id="scanKodeBarang" placeholder="Scan barcode atau ketik kode"
+                           class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                </div> --}}
 
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
@@ -67,7 +75,7 @@
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
                         Kualitas
                     </label>
-                    <input type="text" name="kualitas" placeholder="Contoh: Baik, Bagus, dll"
+                    <input type="text" name="kualitas" placeholder="Baik/Buruk"
                            class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
                 </div>
             </div>
@@ -101,6 +109,44 @@
                     width: '100%'
                 });
             }
+
+            // Barcode scan functionality for stock masuk
+            document.getElementById('scanKodeBarang').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const scannedCode = this.value.trim().toLowerCase();
+                    if (scannedCode) {
+                        // Find the option with matching kode_barang
+                        const selectElement = document.querySelector('select[name="stock_id"]');
+                        const options = selectElement.options;
+                        let found = false;
+                        let foundValue = null;
+                        for (let i = 0; i < options.length; i++) {
+                            const optionText = options[i].text;
+                            const kodeBarang = optionText.split(' - ')[0].trim().toLowerCase(); // Extract and normalize kode_barang
+                            if (kodeBarang === scannedCode) {
+                                foundValue = options[i].value;
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (found && foundValue) {
+                            // Set the select value using select2 method
+                            $(selectElement).val(foundValue).trigger('change');
+                        } else {
+                            alert('Barang dengan kode "' + this.value.trim() + '" tidak ditemukan.');
+                        }
+                        // Clear the scan input
+                        this.value = '';
+                        // Focus on next field (supplier) if found
+                        if (found) {
+                            setTimeout(() => {
+                                document.querySelector('select[name="supplier_id"]').focus();
+                            }, 100);
+                        }
+                    }
+                }
+            });
         });
     </script>
 

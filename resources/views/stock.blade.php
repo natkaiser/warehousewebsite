@@ -38,8 +38,8 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Kode Barang</label>
-                    <input type="text" name="kode_barang" required placeholder="Contoh : BGR-001"
-                           class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                    <input type="text" name="kode_barang" id="kodeBarang" required placeholder="Scan barcode atau ketik manual"
+                           class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent">
                 </div>
 
                 <div>
@@ -393,5 +393,14 @@ function downloadPDF() {
         showAlert('File PDF berhasil diunduh!', 'success', 3000);
     }, 1000);
 }
+
+// Barcode scan functionality - langsung isi kode_barang saat scan
+document.getElementById('kodeBarang').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        // Barcode scanner sudah mengisi field ini, lanjut ke field berikutnya
+        document.querySelector('input[name="nama_barang"]').focus();
+    }
+});
 </script>
 @endsection

@@ -126,12 +126,13 @@
             <thead>
                 <tr>
                     <th style="width: 5%;">No</th>
-                    <th style="width: 10%;">Tanggal</th>
-                    <th style="width: 10%;">Kode Barang</th>
-                    <th style="width: 20%;">Nama Barang</th>
-                    <th style="width: 25%;">Supplier</th>
-                    <th style="width: 10%; text-align: center;">Jumlah</th>
-                    <th style="width: 20%;">Keterangan</th>
+                    <th style="width: 8%;">Tanggal</th>
+                    <th style="width: 8%;">Kode Barang</th>
+                    <th style="width: 18%;">Nama Barang</th>
+                    <th style="width: 20%;">Supplier</th>
+                    <th style="width: 8%; text-align: center;">Jumlah</th>
+                    <th style="width: 10%;">Kualitas</th>
+                    <th style="width: 23%;">Keterangan</th>
                 </tr>
             </thead>
             <tbody>
@@ -145,6 +146,7 @@
                         <td>{{ $row->stock->nama_barang }}</td>
                         <td>{{ $row->supplier->nama }}</td>
                         <td class="text-center"><strong>{{ $row->jumlah }}</strong></td>
+                        <td>{{ $row->kualitas ?? '-' }}</td>
                         <td>{{ $row->keterangan ?? '-' }}</td>
                     </tr>
                 @endforeach
