@@ -70,46 +70,62 @@
         </form>
     </div>
 
-        {{-- FORM CARI BARANG --}}
+    {{-- FORM CARI BARANG --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center gap-2">
-                <div class="bg-blue-100 p-2 rounded-lg text-blue-600">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                    </svg>
-                </div>
-                <h3 class="text-lg font-bold text-slate-800 tracking-tight">Cari Barang</h3>
-            </div>
-            <button onclick="downloadPDF()" class="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+        <div class="flex items-center gap-2 mb-4">
+            <div class="bg-blue-100 p-2 rounded-lg text-blue-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
-                Export PDF
-            </button>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800 tracking-tight">Cari Barang</h3>
         </div>
 
-        <form action="{{ route('stock.index') }}" method="GET" class="flex gap-3">
-            <div class="flex-1">
-                <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari berdasarkan nama barang, kode, atau spesifikasi..."
+        <form action="{{ route('stock.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Kode Barang</label>
+                <input type="text" name="kode_barang"
+                       placeholder="Cari kode barang..."
+                       value="{{ request('kode_barang') }}"
                        class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             </div>
-            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-semibold transition">
-                Cari
-            </button>
-            @if($search)
-                <a href="{{ route('stock.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg text-sm font-semibold transition">
-                    Reset
-                </a>
-            @endif
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Nama Barang</label>
+                <input type="text" name="nama_barang"
+                       placeholder="Cari nama barang..."
+                       value="{{ request('nama_barang') }}"
+                       class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Spesifikasi</label>
+                <input type="text" name="spesifikasi"
+                       placeholder="Cari spesifikasi..."
+                       value="{{ request('spesifikasi') }}"
+                       class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+            <div class="flex items-end gap-0 justify-end">
+                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-2 rounded-lg text-sm font-semibold transition">
+                    Cari
+                </button>
+                <button onclick="downloadPDF()" class="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Export PDF
+                </button>
+            </div>
         </form>
 
-        @if($search)
+        @if(request('kode_barang') || request('nama_barang') || request('spesifikasi'))
             <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                 <p class="text-sm text-blue-800">
-                    Hasil pencarian untuk: <span class="font-semibold">{{ $search }}</span>
+                    Hasil pencarian:
+                    @if(request('kode_barang')) Kode: "{{ request('kode_barang') }}", @endif
+                    @if(request('nama_barang')) Nama: "{{ request('nama_barang') }}", @endif
+                    @if(request('spesifikasi')) Spesifikasi: "{{ request('spesifikasi') }}", @endif
                     <span class="text-blue-600">({{ $stocks->count() }} hasil ditemukan)</span>
+                    <a href="{{ route('stock.index') }}" class="ml-3 text-blue-500 hover:text-blue-600 font-semibold">Reset</a>
                 </p>
             </div>
         @endif
@@ -356,16 +372,23 @@ document.addEventListener('keydown', function(e) {
 
 // Fungsi export PDF
 function downloadPDF() {
-    const search = document.querySelector('input[name="search"]').value;
+    const kodeBarang = document.querySelector('input[name="kode_barang"]').value;
+    const namaBarang = document.querySelector('input[name="nama_barang"]').value;
+    const spesifikasi = document.querySelector('input[name="spesifikasi"]').value;
     let url = '{{ route("stock.export") }}';
-    
-    if (search) {
-        url += '?search=' + encodeURIComponent(search);
+    const params = [];
+
+    if (kodeBarang) params.push('kode_barang=' + encodeURIComponent(kodeBarang));
+    if (namaBarang) params.push('nama_barang=' + encodeURIComponent(namaBarang));
+    if (spesifikasi) params.push('spesifikasi=' + encodeURIComponent(spesifikasi));
+
+    if (params.length > 0) {
+        url += '?' + params.join('&');
     }
-    
+
     showAlert('Mengunduh file PDF...', 'info', 0);
     window.location.href = url;
-    
+
     setTimeout(() => {
         showAlert('File PDF berhasil diunduh!', 'success', 3000);
     }, 1000);

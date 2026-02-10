@@ -17,17 +17,21 @@ class StockMasukController extends Controller
         $suppliers = Supplier::orderBy('nama')->get();
 
         $history = StockMasuk::with(['stock', 'supplier'])
-            ->when($request->filled('search') && trim($request->search), function ($q) use ($request) {
-                $search = trim($request->search);
-                $q->where(function($query) use ($search) {
-                    $query->whereHas('stock', function ($s) use ($search) {
-                        $s->whereRaw('LOWER(nama_barang) LIKE LOWER(?)', ["%{$search}%"])
-                          ->orWhereRaw('LOWER(kode_barang) LIKE LOWER(?)', ["%{$search}%"]);
-                    })
-                    ->orWhereHas('supplier', function ($s) use ($search) {
-                        $s->whereRaw('LOWER(nama) LIKE LOWER(?)', ["%{$search}%"]);
-                    });
+            ->when($request->filled('nama_barang') && trim($request->nama_barang), function ($q) use ($request) {
+                $nama_barang = trim($request->nama_barang);
+                $q->whereHas('stock', function ($s) use ($nama_barang) {
+                    $s->whereRaw('LOWER(nama_barang) LIKE LOWER(?)', ["%{$nama_barang}%"])
+                      ->orWhereRaw('LOWER(kode_barang) LIKE LOWER(?)', ["%{$nama_barang}%"]);
                 });
+            })
+            ->when($request->filled('supplier') && trim($request->supplier), function ($q) use ($request) {
+                $supplier = trim($request->supplier);
+                $q->whereHas('supplier', function ($s) use ($supplier) {
+                    $s->whereRaw('LOWER(nama) LIKE LOWER(?)', ["%{$supplier}%"]);
+                });
+            })
+            ->when($request->filled('tanggal'), function ($q) use ($request) {
+                $q->where('tanggal', $request->tanggal);
             })
             ->latest()
             ->get();
@@ -42,6 +46,7 @@ class StockMasukController extends Controller
             'stock_id' => 'required|exists:stocks,id',
             'supplier_id' => 'required|exists:suppliers,id',
             'jumlah' => 'required|integer|min:1',
+            'kualitas' => 'nullable|string|max:255',
         ]);
 
         DB::transaction(function () use ($request) {

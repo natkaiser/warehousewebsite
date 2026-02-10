@@ -13,18 +13,25 @@ class StockController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->input('search', '');
-        
         $query = Stock::latest();
-        
-        if ($search) {
-            $query->where('nama_barang', 'like', '%' . $search . '%')
-                  ->orWhere('kode_barang', 'like', '%' . $search . '%')
-                  ->orWhere('spesifikasi', 'like', '%' . $search . '%');
+
+        if ($request->filled('kode_barang') && trim($request->kode_barang)) {
+            $kode_barang = trim($request->kode_barang);
+            $query->whereRaw('LOWER(kode_barang) LIKE LOWER(?)', ["%{$kode_barang}%"]);
         }
-        
+
+        if ($request->filled('nama_barang') && trim($request->nama_barang)) {
+            $nama_barang = trim($request->nama_barang);
+            $query->whereRaw('LOWER(nama_barang) LIKE LOWER(?)', ["%{$nama_barang}%"]);
+        }
+
+        if ($request->filled('spesifikasi') && trim($request->spesifikasi)) {
+            $spesifikasi = trim($request->spesifikasi);
+            $query->whereRaw('LOWER(spesifikasi) LIKE LOWER(?)', ["%{$spesifikasi}%"]);
+        }
+
         $stocks = $query->get();
-        return view('stock', compact('stocks', 'search'));
+        return view('stock', compact('stocks'));
     }
 
     public function store(Request $request)
@@ -74,15 +81,23 @@ class StockController extends Controller
 
     public function export(Request $request)
     {
-        $search = $request->input('search', '');
         $filename = 'Stock_Barang_' . date('d-m-Y_H-i-s') . '.pdf';
 
         $query = Stock::latest();
-        
-        if ($search) {
-            $query->where('nama_barang', 'like', '%' . $search . '%')
-                  ->orWhere('kode_barang', 'like', '%' . $search . '%')
-                  ->orWhere('spesifikasi', 'like', '%' . $search . '%');
+
+        if ($request->filled('kode_barang') && trim($request->kode_barang)) {
+            $kode_barang = trim($request->kode_barang);
+            $query->whereRaw('LOWER(kode_barang) LIKE LOWER(?)', ["%{$kode_barang}%"]);
+        }
+
+        if ($request->filled('nama_barang') && trim($request->nama_barang)) {
+            $nama_barang = trim($request->nama_barang);
+            $query->whereRaw('LOWER(nama_barang) LIKE LOWER(?)', ["%{$nama_barang}%"]);
+        }
+
+        if ($request->filled('spesifikasi') && trim($request->spesifikasi)) {
+            $spesifikasi = trim($request->spesifikasi);
+            $query->whereRaw('LOWER(spesifikasi) LIKE LOWER(?)', ["%{$spesifikasi}%"]);
         }
 
         $stocks = $query->get();

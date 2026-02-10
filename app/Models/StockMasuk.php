@@ -14,6 +14,7 @@ class StockMasuk extends Model
         'stock_id',
         'supplier_id',
         'jumlah',
+        'kualitas',
         'keterangan'
     ];
 

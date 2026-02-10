@@ -16,17 +16,21 @@ class StockKeluarController extends Controller
         $customers = Customer::all();
 
         $history = StockKeluar::with(['stock', 'customer'])
-            ->when($request->filled('search') && trim($request->search), function ($q) use ($request) {
-                $search = trim($request->search);
-                $q->where(function($query) use ($search) {
-                    $query->whereHas('stock', function ($s) use ($search) {
-                        $s->whereRaw('LOWER(nama_barang) LIKE LOWER(?)', ["%{$search}%"])
-                          ->orWhereRaw('LOWER(kode_barang) LIKE LOWER(?)', ["%{$search}%"]);
-                    })
-                    ->orWhereHas('customer', function ($s) use ($search) {
-                        $s->whereRaw('LOWER(nama) LIKE LOWER(?)', ["%{$search}%"]);
-                    });
+            ->when($request->filled('nama_barang') && trim($request->nama_barang), function ($q) use ($request) {
+                $nama_barang = trim($request->nama_barang);
+                $q->whereHas('stock', function ($s) use ($nama_barang) {
+                    $s->whereRaw('LOWER(nama_barang) LIKE LOWER(?)', ["%{$nama_barang}%"])
+                      ->orWhereRaw('LOWER(kode_barang) LIKE LOWER(?)', ["%{$nama_barang}%"]);
                 });
+            })
+            ->when($request->filled('nama_customer') && trim($request->nama_customer), function ($q) use ($request) {
+                $nama_customer = trim($request->nama_customer);
+                $q->whereHas('customer', function ($s) use ($nama_customer) {
+                    $s->whereRaw('LOWER(nama) LIKE LOWER(?)', ["%{$nama_customer}%"]);
+                });
+            })
+            ->when($request->filled('tanggal'), function ($q) use ($request) {
+                $q->where('tanggal', $request->tanggal);
             })
             ->latest()
             ->get();
@@ -66,22 +70,26 @@ class StockKeluarController extends Controller
     public function exportPdf(Request $request)
     {
         $history = StockKeluar::with(['stock', 'customer'])
-            ->when($request->filled('search') && trim($request->search), function ($q) use ($request) {
-                $search = trim($request->search);
-                $q->where(function($query) use ($search) {
-                    $query->whereHas('stock', function ($s) use ($search) {
-                        $s->whereRaw('LOWER(nama_barang) LIKE LOWER(?)', ["%{$search}%"])
-                          ->orWhereRaw('LOWER(kode_barang) LIKE LOWER(?)', ["%{$search}%"]);
-                    })
-                    ->orWhereHas('customer', function ($s) use ($search) {
-                        $s->whereRaw('LOWER(nama) LIKE LOWER(?)', ["%{$search}%"]);
-                    });
+            ->when($request->filled('nama_barang') && trim($request->nama_barang), function ($q) use ($request) {
+                $nama_barang = trim($request->nama_barang);
+                $q->whereHas('stock', function ($s) use ($nama_barang) {
+                    $s->whereRaw('LOWER(nama_barang) LIKE LOWER(?)', ["%{$nama_barang}%"])
+                      ->orWhereRaw('LOWER(kode_barang) LIKE LOWER(?)', ["%{$nama_barang}%"]);
                 });
+            })
+            ->when($request->filled('nama_customer') && trim($request->nama_customer), function ($q) use ($request) {
+                $nama_customer = trim($request->nama_customer);
+                $q->whereHas('customer', function ($s) use ($nama_customer) {
+                    $s->whereRaw('LOWER(nama) LIKE LOWER(?)', ["%{$nama_customer}%"]);
+                });
+            })
+            ->when($request->filled('tanggal'), function ($q) use ($request) {
+                $q->where('tanggal', $request->tanggal);
             })
             ->latest()
             ->get();
 
-        $pdf = Pdf::loadView('pdf.stock_keluar', ['history' => $history, 'search' => $request->search])
+        $pdf = Pdf::loadView('pdf.stock_keluar', ['history' => $history, 'nama_barang' => $request->nama_barang, 'nama_customer' => $request->nama_customer, 'tanggal' => $request->tanggal])
                    ->setPaper('a4', 'landscape');
 
         $filename = 'Stock_Keluar_' . date('Y-m-d_His') . '.pdf';
