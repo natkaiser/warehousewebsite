@@ -31,7 +31,8 @@ class StockController extends Controller
         }
 
         $stocks = $query->get();
-        return view('stock', compact('stocks'));
+        $search = $request->nama_barang;
+        return view('stock', compact('stocks', 'search'));
     }
 
     public function store(Request $request)
