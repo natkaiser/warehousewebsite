@@ -1,0 +1,1 @@
+- [x] Update stock.blade.php search section to match customer/supplier design

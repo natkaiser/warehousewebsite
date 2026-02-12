@@ -19,7 +19,7 @@ class CustomerController extends Controller
                   ->orWhere('telepon', 'like', '%' . $search . '%');
         }
 
-        $customers = $query->get();
+        $customers = $query->paginate(10);
         return view('customer', compact('customers', 'search'));
     }
 

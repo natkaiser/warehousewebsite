@@ -22,7 +22,7 @@
 
         <form action="{{ route('stockmasuk.store') }}" method="POST">
             @csrf
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
                         Tanggal
@@ -30,14 +30,6 @@
                     <input type="date" name="tanggal" value="{{ date('Y-m-d') }}"
                            class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm" required>
                 </div>
-
-                {{-- <div>
-                    <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
-                        Scan Kode Barang
-                    </label>
-                    <input type="text" id="scanKodeBarang" placeholder="Scan barcode atau ketik kode"
-                           class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
-                </div> --}}
 
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
@@ -70,14 +62,14 @@
                     <input type="number" name="jumlah" placeholder="0" min="1"
                            class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm" required>
                 </div>
+            </div>
 
-                <div>
-                    <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
-                        Kualitas
-                    </label>
-                    <input type="text" name="kualitas" placeholder="Baik/Buruk"
-                           class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
-                </div>
+            <div class="mt-4">
+                <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
+                    Kualitas
+                </label>
+                <input type="text" name="kualitas" placeholder="Baik/Buruk"
+                       class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
             </div>
 
             <div class="mt-4">
@@ -109,101 +101,56 @@
                     width: '100%'
                 });
             }
-
-            // Barcode scan functionality for stock masuk
-            document.getElementById('scanKodeBarang').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    const scannedCode = this.value.trim().toLowerCase();
-                    if (scannedCode) {
-                        // Find the option with matching kode_barang
-                        const selectElement = document.querySelector('select[name="stock_id"]');
-                        const options = selectElement.options;
-                        let found = false;
-                        let foundValue = null;
-                        for (let i = 0; i < options.length; i++) {
-                            const optionText = options[i].text;
-                            const kodeBarang = optionText.split(' - ')[0].trim().toLowerCase(); // Extract and normalize kode_barang
-                            if (kodeBarang === scannedCode) {
-                                foundValue = options[i].value;
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (found && foundValue) {
-                            // Set the select value using select2 method
-                            $(selectElement).val(foundValue).trigger('change');
-                        } else {
-                            alert('Barang dengan kode "' + this.value.trim() + '" tidak ditemukan.');
-                        }
-                        // Clear the scan input
-                        this.value = '';
-                        // Focus on next field (supplier) if found
-                        if (found) {
-                            setTimeout(() => {
-                                document.querySelector('select[name="supplier_id"]').focus();
-                            }, 100);
-                        }
-                    }
-                }
-            });
         });
     </script>
 
     {{-- SEARCH BARANG MASUK --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-        <div class="flex items-center gap-2 mb-4">
-            <div class="bg-blue-100 p-2 rounded-lg text-blue-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+                <div class="bg-blue-100 p-2 rounded-lg text-blue-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 tracking-tight">Cari Barang Masuk</h3>
             </div>
-            <h3 class="text-lg font-bold text-slate-800 tracking-tight">
-                Cari Barang Masuk
-            </h3>
+            <button onclick="window.location.href='{{ route('stockmasuk.export.pdf', ['nama_barang' => request('nama_barang'), 'supplier' => request('supplier'), 'tanggal' => request('tanggal')]) }}'"
+                    class="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                </svg>
+                Export PDF
+            </button>
         </div>
 
-        <form action="{{ route('stockmasuk.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-4 gap-3">
-            <div>
-                <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
-                    Nama Barang
-                </label>
+        <form action="{{ route('stockmasuk.index') }}" method="GET" class="flex gap-3">
+            <div class="flex-1">
                 <input type="text" name="nama_barang"
                        placeholder="Cari nama barang..."
                        value="{{ request('nama_barang') }}"
                        class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             </div>
-            <div>
-                <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
-                    Supplier
-                </label>
+            <div class="flex-1">
                 <input type="text" name="supplier"
                        placeholder="Cari supplier..."
                        value="{{ request('supplier') }}"
                        class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             </div>
-            <div>
-                <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
-                    Tanggal
-                </label>
+            <div class="flex-1">
                 <input type="date" name="tanggal"
                        value="{{ request('tanggal') }}"
                        class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             </div>
-            <div class="flex items-end gap-0 justify-end">
-                <button type="submit"
-                        class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-2 rounded-lg text-sm font-semibold transition">
-                    Cari
-                </button>
-                <button onclick="window.location.href='{{ route('stockmasuk.export.pdf', ['nama_barang' => request('nama_barang'), 'supplier' => request('supplier'), 'tanggal' => request('tanggal')]) }}'"
-                        class="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                    </svg>
-                    Export PDF
-                </button>
-            </div>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-semibold transition">
+                Cari
+            </button>
+            @if(request('nama_barang') || request('supplier') || request('tanggal'))
+                <a href="{{ route('stockmasuk.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg text-sm font-semibold transition">
+                    Reset
+                </a>
+            @endif
         </form>
     </div>
 

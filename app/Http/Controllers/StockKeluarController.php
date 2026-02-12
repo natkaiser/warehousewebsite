@@ -12,7 +12,7 @@ class StockKeluarController extends Controller
 {
     public function index(Request $request)
     {
-        $masterBarang = Stock::where('stok', '>', 0)->get();
+        $masterBarang = Stock::orderBy('nama_barang')->get();
         $customers = Customer::all();
 
         $history = StockKeluar::with(['stock', 'customer'])

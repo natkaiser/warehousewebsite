@@ -43,7 +43,7 @@
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
                         Nama Customer
                     </label>
-                    <input type="text" name="nama" placeholder="Contoh: John Doe" value="{{ old('nama') }}"
+                    <input type="text" name="nama" placeholder="Contoh: Rifqi Nata" value="{{ old('nama') }}"
                            class="w-full px-3 py-2 bg-gray-50 border @error('nama') border-red-500 @else border-gray-200 @enderror rounded-lg text-sm">
                     @error('nama')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -54,7 +54,7 @@
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
                         Alamat
                     </label>
-                    <input type="text" name="alamat" placeholder="Alamat customer" value="{{ old('alamat') }}"
+                    <input type="text" name="alamat" placeholder="Alamat Customer" value="{{ old('alamat') }}"
                            class="w-full px-3 py-2 bg-gray-50 border @error('alamat') border-red-500 @else border-gray-200 @enderror rounded-lg text-sm">
                     @error('alamat')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -122,7 +122,7 @@
             <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                 <p class="text-sm text-blue-800">
                     Hasil pencarian untuk: <span class="font-semibold">{{ $search }}</span>
-                    <span class="text-blue-600">({{ $customers->count() }} hasil ditemukan)</span>
+                    <span class="text-blue-600">({{ $customers->total() }} hasil ditemukan)</span>
                 </p>
             </div>
         @endif
@@ -139,7 +139,7 @@
                     </svg>
                 </div>
                 <h3 class="text-lg font-bold text-slate-800 tracking-tight">
-                    Daftar Customer
+                    Daftar Customer (Total: {{ $customers->total() }})
                 </h3>
             </div>
         </div>
@@ -148,18 +148,18 @@
             <table class="w-full text-left border-collapse">
                 <thead class="bg-emerald-50 text-emerald-700 text-sm uppercase">
                 <tr>
-                    <th class="p-4">No</th>
-                    <th class="p-4">Nama</th>
-                    <th class="p-4">Alamat</th>
-                    <th class="p-4">Telepon</th>
-                    <th class="p-4 text-center">Aksi</th>
+                    <th class="p-4 w-16">No</th>
+                    <th class="p-4 w-48">Nama</th>
+                    <th class="p-4 w-64">Alamat</th>
+                    <th class="p-4 w-32">Telepon</th>
+                    <th class="p-4 text-center w-24">Aksi</th>
                 </tr>
                 </thead>
 
                 <tbody class="divide-y divide-gray-100">
                 @forelse($customers as $i => $customer)
                     <tr class="hover:bg-gray-50 transition">
-                        <td class="p-4 text-sm text-gray-600">{{ $i + 1 }}</td>
+                        <td class="p-4 text-sm text-gray-600">{{ ($customers->currentPage() - 1) * 10 + $i + 1 }}</td>
                         <td class="p-4 text-sm font-medium text-slate-800">{{ $customer->nama }}</td>
                         <td class="p-4 text-sm text-slate-600">{{ $customer->alamat }}</td>
                         <td class="p-4 text-sm text-slate-600">{{ $customer->telepon }}</td>
@@ -204,6 +204,16 @@
                 @endforelse
                 </tbody>
             </table>
+        </div>
+
+        {{-- PAGINATION --}}
+        <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50">
+            <div class="text-sm text-gray-600">
+                Menampilkan <span class="font-bold">{{ $customers->count() }}</span> dari <span class="font-bold">{{ $customers->total() }}</span> customer
+            </div>
+            <div class="flex items-center gap-2">
+                {{ $customers->appends(request()->query())->links('pagination::tailwind') }}
+            </div>
         </div>
     </div>
 

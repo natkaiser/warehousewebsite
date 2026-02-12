@@ -54,7 +54,7 @@
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
                         Alamat
                     </label>
-                    <input type="text" name="alamat" placeholder="Alamat supplier" value="{{ old('alamat') }}"
+                    <input type="text" name="alamat" placeholder="Alamat Supplier" value="{{ old('alamat') }}"
                            class="w-full px-3 py-2 bg-gray-50 border @error('alamat') border-red-500 @else border-gray-200 @enderror rounded-lg text-sm">
                     @error('alamat')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -139,7 +139,7 @@
                     </svg>
                 </div>
                 <h3 class="text-lg font-bold text-slate-800 tracking-tight">
-                    Daftar Supplier
+                    Daftar Supplier (Total: {{ $suppliers->total() }})
                 </h3>
             </div>
         </div>
@@ -148,18 +148,18 @@
             <table class="w-full text-left border-collapse">
                 <thead class="bg-emerald-50 text-emerald-700 text-sm uppercase">
                 <tr>
-                    <th class="p-4">No</th>
-                    <th class="p-4">Nama</th>
-                    <th class="p-4">Alamat</th>
-                    <th class="p-4">Telepon</th>
-                    <th class="p-4 text-center">Aksi</th>
+                    <th class="p-4 w-16">No</th>
+                    <th class="p-4 w-48">Nama</th>
+                    <th class="p-4 w-64">Alamat</th>
+                    <th class="p-4 w-32">Telepon</th>
+                    <th class="p-4 text-center w-24">Aksi</th>
                 </tr>
                 </thead>
 
                 <tbody class="divide-y divide-gray-100">
                 @forelse($suppliers as $i => $supplier)
                     <tr class="hover:bg-gray-50 transition">
-                        <td class="p-4 text-sm text-gray-600">{{ $i + 1 }}</td>
+                        <td class="p-4 text-sm text-gray-600">{{ ($suppliers->currentPage() - 1) * 10 + $i + 1 }}</td>
                         <td class="p-4 text-sm font-medium text-slate-800">{{ $supplier->nama }}</td>
                         <td class="p-4 text-sm text-slate-600">{{ $supplier->alamat }}</td>
                         <td class="p-4 text-sm text-slate-600">{{ $supplier->telepon }}</td>
@@ -204,6 +204,16 @@
                 @endforelse
                 </tbody>
             </table>
+        </div>
+
+        {{-- PAGINATION --}}
+        <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50">
+            <div class="text-sm text-gray-600">
+                Menampilkan <span class="font-bold">{{ $suppliers->count() }}</span> dari <span class="font-bold">{{ $suppliers->total() }}</span> supplier
+            </div>
+            <div class="flex items-center gap-2">
+                {{ $suppliers->appends(request()->query())->links('pagination::tailwind') }}
+            </div>
         </div>
     </div>
 

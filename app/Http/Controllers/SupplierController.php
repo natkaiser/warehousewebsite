@@ -20,7 +20,7 @@ class SupplierController extends Controller
                   ->orWhere('telepon', 'like', '%' . $search . '%');
         }
         
-        $suppliers = $query->get();
+        $suppliers = $query->paginate(10);
         return view('supplier', compact('suppliers', 'search'));
     }
 
