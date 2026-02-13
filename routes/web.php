@@ -109,11 +109,13 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/stock-masuk', [StockMasukController::class, 'index'])->name('stockmasuk.index');
 Route::get('/stock-masuk/export/pdf', [StockMasukController::class, 'exportPdf'])->name('stockmasuk.export.pdf');
+Route::get('/stock-masuk/form-penerimaan', [StockMasukController::class, 'formPenerimaanBarang'])->name('stockmasuk.form.penerimaan');
 Route::post('/stock-masuk', [StockMasukController::class, 'store'])->name('stockmasuk.store');
 Route::get('/stockmasuk', function () {return redirect()->route('stockmasuk.index');});
 
 Route::get('/stock-keluar', [StockKeluarController::class, 'index'])->name('stockkeluar.index');
 Route::get('/stock-keluar/export/pdf', [StockKeluarController::class, 'exportPdf'])->name('stockkeluar.export.pdf');
+Route::get('/stock-keluar/form-pengeluaran', [StockKeluarController::class, 'formPengeluaranBarang'])->name('stockkeluar.form.pengeluaran');
 Route::post('/stock-keluar', [StockKeluarController::class, 'store'])->name('stockkeluar.store');
 Route::get('/stockkeluar', [StockKeluarController::class, 'index']);
 

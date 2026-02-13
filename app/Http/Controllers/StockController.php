@@ -30,7 +30,7 @@ class StockController extends Controller
             $query->whereRaw('LOWER(spesifikasi) LIKE LOWER(?)', ["%{$spesifikasi}%"]);
         }
 
-        $stocks = $query->get();
+        $stocks = $query->paginate(10);
         $search = $request->nama_barang;
         return view('stock', compact('stocks', 'search'));
     }

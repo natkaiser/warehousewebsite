@@ -126,15 +126,28 @@
                     @if(request('kode_barang')) Kode: "{{ request('kode_barang') }}", @endif
                     @if(request('nama_barang')) Nama: "{{ request('nama_barang') }}", @endif
                     @if(request('spesifikasi')) Spesifikasi: "{{ request('spesifikasi') }}", @endif
-                    <span class="text-blue-600">({{ $stocks->count() }} hasil ditemukan)</span>
+                    <span class="text-blue-600">({{ $stocks->total() }} hasil ditemukan)</span>
                     <a href="{{ route('stock.index') }}" class="ml-3 text-blue-500 hover:text-blue-600 font-semibold">Reset</a>
                 </p>
             </div>
         @endif
     </div>
 
-    {{-- TABEL DATA --}}
+    {{-- DAFTAR STOCK BARANG --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="flex items-center justify-between p-6 border-b border-gray-100">
+            <div class="flex items-center gap-2">
+                <div class="bg-blue-100 p-2 rounded-lg text-blue-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M9 12h6m2 8H7a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v12a2 2 0 01-2 2z"/>
+                    </svg>
+                </div>
+                <h3 class="text-lg font-bold text-slate-800 tracking-tight">
+                    Daftar Stock Barang (Total: {{ $stocks->total() }})
+                </h3>
+            </div>
+        </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead class="bg-emerald-50 text-emerald-700 text-sm uppercase">
@@ -152,7 +165,6 @@
                 <tbody class="divide-y divide-gray-100">
                 @forelse($stocks as $index => $item)
                     <tr class="hover:bg-gray-50 transition">
-                        <td class="p-4 text-sm text-gray-600">{{ $index + 1 }}</td>
                         <td class="p-4 text-sm font-mono text-slate-700">{{ $item->kode_barang }}</td>
                         <td class="p-4 text-sm font-medium text-slate-800">{{ $item->nama_barang }}</td>
                         <td class="p-4 text-sm text-slate-600">
@@ -216,6 +228,16 @@
                 @endforelse
                 </tbody>
             </table>
+        </div>
+
+        {{-- PAGINATION --}}
+        <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50">
+            <div class="text-sm text-gray-600">
+                Menampilkan <span class="font-bold">{{ $stocks->count() }}</span> dari <span class="font-bold">{{ $stocks->total() }}</span> stock barang
+            </div>
+            <div class="flex items-center gap-2">
+                {{ $stocks->appends(request()->query())->links('pagination::tailwind') }}
+            </div>
         </div>
     </div>
 </div>

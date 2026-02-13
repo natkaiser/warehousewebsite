@@ -33,9 +33,13 @@ class StockKeluarController extends Controller
                 $q->where('tanggal', $request->tanggal);
             })
             ->latest()
-            ->get();
+            ->paginate(10);
 
-        return view('stockkeluar', compact('history', 'masterBarang', 'customers'));
+        $nama_barang = $request->filled('nama_barang') ? trim($request->nama_barang) : null;
+        $nama_customer = $request->filled('nama_customer') ? trim($request->nama_customer) : null;
+        $tanggal = $request->filled('tanggal') ? $request->tanggal : null;
+
+        return view('stockkeluar', compact('history', 'masterBarang', 'customers', 'nama_barang', 'nama_customer', 'tanggal'));
     }
 
     public function store(Request $request)
@@ -93,6 +97,15 @@ class StockKeluarController extends Controller
                    ->setPaper('a4', 'landscape');
 
         $filename = 'Stock_Keluar_' . date('Y-m-d_His') . '.pdf';
+        return $pdf->download($filename);
+    }
+
+    public function formPengeluaranBarang()
+    {
+        $pdf = Pdf::loadView('pdf.stock_keluar', ['isForm' => true])
+                   ->setPaper('a4', 'portrait');
+
+        $filename = 'Form_Pengeluaran_Barang_' . date('Y-m-d_His') . '.pdf';
         return $pdf->download($filename);
     }
 }

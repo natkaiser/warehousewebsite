@@ -159,12 +159,12 @@
         <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             @if(request('nama_barang') || request('supplier') || request('tanggal'))
                 <p class="text-sm text-gray-600">
-                    Hasil pencarian: <span class="font-bold text-slate-800">{{ $history->count() }}</span> data ditemukan
+                    Hasil pencarian: <span class="font-bold text-slate-800">{{ $history->total() }}</span> data ditemukan
                     <a h  ref="{{ route('stockmasuk.index') }}" class="ml-3 text-blue-500 hover:text-blue-600 font-semibold">Reset</a>
                 </p>
             @else
                 <p class="text-sm text-gray-600">
-                    Total: <span class="font-bold text-slate-800">{{ $history->count() }}</span> data
+                    Total: <span class="font-bold text-slate-800">{{ $history->total() }}</span> data
                 </p>
             @endif
         </div>
@@ -186,7 +186,7 @@
                 <tbody class="divide-y divide-gray-100">
                 @forelse($history as $i => $row)
                     <tr class="hover:bg-gray-50 transition">
-                        <td class="p-4 text-sm text-gray-600">{{ $i + 1 }}</td>
+                        <td class="p-4 text-sm text-gray-600">{{ ($history->currentPage() - 1) * 10 + $i + 1 }}</td>
                         <td class="p-4 text-sm text-gray-600">{{ $row->tanggal }}</td>
                         <td class="p-4 text-sm font-mono text-slate-700">{{ $row->stock->kode_barang }}</td>
                         <td class="p-4 text-sm font-medium text-slate-800">{{ $row->stock->nama_barang }}</td>
@@ -204,6 +204,16 @@
                 @endforelse
                 </tbody>
             </table>
+        </div>
+
+        {{-- PAGINATION --}}
+        <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50">
+            <div class="text-sm text-gray-600">
+                Menampilkan <span class="font-bold">{{ $history->count() }}</span> dari <span class="font-bold">{{ $history->total() }}</span> data barang masuk
+            </div>
+            <div class="flex items-center gap-2">
+                {{ $history->appends(request()->query())->links('pagination::tailwind') }}
+            </div>
         </div>
     </div>
 
