@@ -122,9 +122,10 @@
             <tr>
                 <th style="width: 5%;">No</th>
                 <th style="width: 12%;">Kode Barang</th>
-                <th style="width: 25%;">Nama Barang</th>
-                <th style="width: 20%;">Spesifikasi</th>
-                <th style="width: 12%; text-align: right;">Stok</th>
+                <th style="width: 22%;">Nama Barang</th>
+                <th style="width: 10%;">Rak</th>
+                <th style="width: 19%;">Spesifikasi</th>
+                <th style="width: 10%; text-align: right;">Stok</th>
                 <th style="width: 12%;">Satuan</th>
             </tr>
         </thead>
@@ -136,13 +137,14 @@
                     <td class="text-center">{{ $index + 1 }}</td>
                     <td><strong>{{ $item->kode_barang }}</strong></td>
                     <td>{{ $item->nama_barang }}</td>
+                    <td>{{ $item->rak ?? '-' }}</td>
                     <td>{{ $item->spesifikasi ?? '-' }}</td>
                     <td class="text-right"><strong>{{ $item->stok }}</strong></td>
                     <td>{{ $item->satuan }}</td>
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6" class="text-center" style="color: #999;">
+                    <td colspan="7" class="text-center" style="color: #999;">
                         Tidak ada data stock barang
                     </td>
                 </tr>
