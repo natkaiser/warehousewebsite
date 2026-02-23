@@ -1,14 +1,14 @@
 @extends('layouts.app')
 
-@section('header_title', 'Dashboard Manajemen Warehouse')
+@section('header_title', 'Dashboard Warehouse Management')
 
 @section('content')
 
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        
+
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition">
             <div>
-                <p class="text-sm text-gray-500 font-medium">Total Jenis Barang</p>
+                <p class="text-sm text-gray-500 font-medium">Total Type of Products</p>
                 <h3 class="text-3xl font-bold text-slate-800 mt-2">{{ $totalStocks }}</h3>
                 <p class="text-xs text-green-500 mt-1 flex items-center gap-1">
                 </p>
@@ -40,7 +40,7 @@
 
         <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-100 flex items-center justify-between hover:shadow-md transition">
             <div>
-                <p class="text-sm text-gray-500 font-medium">Transaksi Bulan Ini: {{ $monthName }}</p>
+                <p class="text-sm text-gray-500 font-medium">This month's transactions: {{ $monthName }}</p>
                 <h3 class="text-3xl font-bold text-slate-800 mt-2">{{ $monthlyTransactions }}</h3>
             </div>
             <div class="p-4 bg-purple-50 text-purple-600 rounded-full">
@@ -52,10 +52,9 @@
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-100">
         <div class="p-6 border-b border-gray-100 flex justify-between items-center">
-            <h3 class="font-bold text-slate-800 text-lg">Aktivitas Terbaru</h3>
-            <a href="#" class="text-sm text-blue-600 hover:underline">Lihat Semua</a>
+            <h3 class="font-bold text-slate-800 text-lg">Latest Activites</h3>
         </div>
-        
+
         <div class="p-6">
             <div class="space-y-6 border-l-2 border-dashed border-gray-200 ml-3">
                 @forelse($recentActivities as $activity)

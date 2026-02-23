@@ -31,7 +31,7 @@
                 </svg>
             </div>
             <h3 class="text-lg font-bold text-slate-800 tracking-tight">
-                Tambah Supplier Baru
+                Add New Supplier
             </h3>
         </div>
 
@@ -41,9 +41,9 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
-                        Nama Supplier
+                     Supplier Name
                     </label>
-                    <input type="text" name="nama" placeholder="Contoh: PT Sumber Air" value="{{ old('nama') }}"
+                    <input type="text" name="nama" placeholder="Example: PT Sumber Air" value="{{ old('nama') }}"
                            class="w-full px-3 py-2 bg-gray-50 border @error('nama') border-red-500 @else border-gray-200 @enderror rounded-lg text-sm">
                     @error('nama')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -52,9 +52,9 @@
 
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
-                        Alamat
+                        Address
                     </label>
-                    <input type="text" name="alamat" placeholder="Alamat Supplier" value="{{ old('alamat') }}"
+                    <input type="text" name="alamat" placeholder="Example: Jl. Cipulir No. 13 Jakarta Selatan" value="{{ old('alamat') }}"
                            class="w-full px-3 py-2 bg-gray-50 border @error('alamat') border-red-500 @else border-gray-200 @enderror rounded-lg text-sm">
                     @error('alamat')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -63,9 +63,9 @@
 
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
-                        Telepon
+                        Phone Number
                     </label>
-                    <input type="text" name="telepon" placeholder="08xxxxxxxx" value="{{ old('telepon') }}"
+                    <input type="text" name="telepon" placeholder="Example: 08xxxxxxxx" value="{{ old('telepon') }}"
                            class="w-full px-3 py-2 bg-gray-50 border @error('telepon') border-red-500 @else border-gray-200 @enderror rounded-lg text-sm">
                     @error('telepon')
                         <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -76,7 +76,7 @@
             <div class="mt-6">
                 <button type="submit"
                         class="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-semibold transition">
-                    Tambah Supplier
+                    Add Supplier
                 </button>
             </div>
         </form>
@@ -92,7 +92,7 @@
                               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
                 </div>
-                <h3 class="text-lg font-bold text-slate-800 tracking-tight">Cari Supplier</h3>
+                <h3 class="text-lg font-bold text-slate-800 tracking-tight">Search Supplier</h3>
             </div>
             <button class="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition"
                     onclick="window.location.href='{{ route('supplier.export.pdf') }}{{ $search ? '?search=' . urlencode($search) : '' }}'">
@@ -105,11 +105,11 @@
 
         <form action="{{ route('supplier.index') }}" method="GET" class="flex gap-3">
             <div class="flex-1">
-                <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Cari berdasarkan nama supplier, alamat, atau telepon..."
+                <input type="text" name="search" value="{{ $search ?? '' }}" placeholder="Search by supplier name, address or phone number..."
                        class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             </div>
             <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-semibold transition">
-                Cari
+                Search
             </button>
             @if($search)
                 <a href="{{ route('supplier.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg text-sm font-semibold transition">
@@ -121,8 +121,8 @@
         @if($search)
             <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                 <p class="text-sm text-blue-800">
-                    Hasil pencarian untuk: <span class="font-semibold">{{ $search }}</span>
-                    <span class="text-blue-600">({{ $suppliers->count() }} hasil ditemukan)</span>
+                    Search Results for: <span class="font-semibold">{{ $search }}</span>
+                    <span class="text-blue-600">({{ $suppliers->count() }} results found)</span>
                 </p>
             </div>
         @endif
@@ -139,7 +139,7 @@
                     </svg>
                 </div>
                 <h3 class="text-lg font-bold text-slate-800 tracking-tight">
-                    Daftar Supplier (Total: {{ $suppliers->total() }})
+                    Supplier List (Total: {{ $suppliers->total() }})
                 </h3>
             </div>
         </div>
@@ -149,10 +149,10 @@
                 <thead class="bg-emerald-50 text-emerald-700 text-sm uppercase">
                 <tr>
                     <th class="p-4 w-16">No</th>
-                    <th class="p-4 w-48">Nama</th>
-                    <th class="p-4 w-64">Alamat</th>
-                    <th class="p-4 w-32">Telepon</th>
-                    <th class="p-4 text-center w-24">Aksi</th>
+                    <th class="p-4 w-48">Name</th>
+                    <th class="p-4 w-64">Address</th>
+                    <th class="p-4 w-32">Phone Number</th>
+                    <th class="p-4 text-center w-24">Action</th>
                 </tr>
                 </thead>
 
@@ -198,7 +198,7 @@
                 @empty
                     <tr>
                         <td colspan="5" class="p-8 text-center text-gray-400">
-                            Belum ada data supplier
+                            No Supplier Data.
                         </td>
                     </tr>
                 @endforelse
@@ -209,7 +209,7 @@
         {{-- PAGINATION --}}
         <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50">
             <div class="text-sm text-gray-600">
-                Menampilkan <span class="font-bold">{{ $suppliers->count() }}</span> dari <span class="font-bold">{{ $suppliers->total() }}</span> supplier
+                Showing <span class="font-bold">{{ $suppliers->count() }}</span> from <span class="font-bold">{{ $suppliers->total() }}</span> supplier
             </div>
             <div class="flex items-center gap-2">
                 {{ $suppliers->appends(request()->query())->links('pagination::tailwind') }}
@@ -242,19 +242,19 @@
 
             <div class="space-y-4">
                 <div>
-                    <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Nama Supplier</label>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Supplier Name</label>
                     <input type="text" id="editNama" name="nama" required
                            class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Alamat</label>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Address</label>
                     <input type="text" id="editAlamat" name="alamat" required
                            class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Telepon</label>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Phone Number</label>
                     <input type="text" id="editTelepon" name="telepon" required
                            class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 </div>
@@ -262,10 +262,10 @@
 
             <div class="flex gap-3 mt-6">
                 <button type="submit" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
-                    Simpan Perubahan
+                    Save Changes
                 </button>
                 <button type="button" onclick="closeEditModal()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-semibold transition">
-                    Batal
+                    Cancel
                 </button>
             </div>
         </form>
@@ -280,10 +280,10 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
             </svg>
         </div>
-        
-        <h3 class="text-lg font-bold text-center text-slate-800 mb-2">Hapus Supplier?</h3>
+
+        <h3 class="text-lg font-bold text-center text-slate-800 mb-2">Delete Supplier?</h3>
         <p class="text-center text-gray-600 text-sm mb-6">
-            Apakah Anda yakin ingin menghapus supplier <span id="deleteName" class="font-semibold text-slate-800"></span>? Tindakan ini tidak dapat dibatalkan.
+            Are you sure you want to delete supplier<br><span id="deleteName" class="font-semibold text-slate-800"></span>?<br> This action cannot be undone.
         </p>
 
         <form id="deleteForm" method="POST">
@@ -292,10 +292,10 @@
 
             <div class="flex gap-3">
                 <button type="button" onclick="closeDeleteModal()" class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm font-semibold transition">
-                    Batal
+                    Cancel
                 </button>
                 <button class="flex-1 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
-                    Ya, Hapus
+                    Yes, Delete
                 </button>
             </div>
         </form>
@@ -306,10 +306,10 @@
         document.getElementById('editNama').value = nama;
         document.getElementById('editAlamat').value = alamat;
         document.getElementById('editTelepon').value = telepon;
-        
+
         const form = document.getElementById('editForm');
         form.action = '/supplier/' + id;
-        
+
         document.getElementById('editModal').classList.remove('hidden');
         document.getElementById('editModal').classList.add('flex');
     }
@@ -322,7 +322,7 @@
         document.getElementById('deleteName').textContent = nama;
         document.getElementById('deleteModal').classList.remove('hidden');
         document.getElementById('deleteModal').classList.add('flex');
-        
+
         const form = document.getElementById('deleteForm');
         form.action = '/supplier/' + id;
     }

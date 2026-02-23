@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('header_title', 'Barang Masuk')
+@section('header_title', 'Stock In')
 
 @section('content')
 
@@ -16,7 +16,7 @@
                 </svg>
             </div>
             <h3 class="text-lg font-bold text-slate-800 tracking-tight">
-                Input Barang Masuk
+                Add Stock In
             </h3>
         </div>
 
@@ -25,7 +25,7 @@
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
-                        Tanggal
+                        Date
                     </label>
                     <input type="date" name="tanggal" value="{{ date('Y-m-d') }}"
                            class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm" required>
@@ -33,7 +33,7 @@
 
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
-                        Barang
+                        Product
                     </label>
                     <select name="stock_id" class="select2 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm" required>
                         <option></option>
@@ -57,33 +57,33 @@
 
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
-                        Jumlah
+                        Quantity
                     </label>
-                    <input type="number" name="jumlah" placeholder="0" min="1"
+                    <input type="number" name="jumlah" placeholder="Example: 10" min="1"
                            class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm" required>
                 </div>
             </div>
 
             <div class="mt-4">
                 <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
-                    Kualitas
+                    Quality
                 </label>
-                <input type="text" name="kualitas" placeholder="Baik/Buruk"
+                <input type="text" name="kualitas" placeholder="Good/Bad/Other"
                        class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
             </div>
 
             <div class="mt-4">
                 <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">
-                    Keterangan
+                    Note
                 </label>
-                <textarea name="keterangan" rows="2" placeholder="Opsional"
+                <textarea name="keterangan" rows="2" placeholder="Enter Notes here..."
                           class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm"></textarea>
             </div>
 
             <div class="mt-6">
                 <button type="submit"
                         class="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2 rounded-lg text-sm font-semibold transition">
-                    Simpan Barang Masuk
+                    Save Stock In
                 </button>
             </div>
         </form>
@@ -96,7 +96,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             if (window.jQuery && typeof jQuery().select2 === 'function') {
                 $('.select2').select2({
-                    placeholder: '-- Pilih Barang --',
+                    placeholder: 'Select product or supplier...',
                     allowClear: true,
                     width: '100%'
                 });
@@ -114,7 +114,7 @@
                               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                     </svg>
                 </div>
-                <h3 class="text-lg font-bold text-slate-800 tracking-tight">Cari Barang Masuk</h3>
+                <h3 class="text-lg font-bold text-slate-800 tracking-tight">Search Stock In</h3>
             </div>
             <button onclick="window.location.href='{{ route('stockmasuk.export.pdf', ['nama_barang' => request('nama_barang'), 'supplier' => request('supplier'), 'tanggal' => request('tanggal')]) }}'"
                     class="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
@@ -128,13 +128,13 @@
         <form action="{{ route('stockmasuk.index') }}" method="GET" class="flex gap-3">
             <div class="flex-1">
                 <input type="text" name="nama_barang"
-                       placeholder="Cari nama barang..."
+                       placeholder="Search Product Name..."
                        value="{{ request('nama_barang') }}"
                        class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             </div>
             <div class="flex-1">
                 <input type="text" name="supplier"
-                       placeholder="Cari supplier..."
+                       placeholder="Search Supplier..."
                        value="{{ request('supplier') }}"
                        class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             </div>
@@ -144,7 +144,7 @@
                        class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             </div>
             <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-semibold transition">
-                Cari
+                Search
             </button>
             @if(request('nama_barang') || request('supplier') || request('tanggal'))
                 <a href="{{ route('stockmasuk.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg text-sm font-semibold transition">
@@ -173,13 +173,13 @@
                 <thead class="bg-emerald-50 text-emerald-700 text-sm uppercase">
                 <tr>
                     <th class="p-4">No</th>
-                    <th class="p-4">Tanggal</th>
-                    <th class="p-4">Kode</th>
-                    <th class="p-4">Nama Barang</th>
+                    <th class="p-4">Date</th>
+                    <th class="p-4">Product ID</th>
+                    <th class="p-4">Product Name</th>
                     <th class="p-4">Supplier</th>
-                    <th class="p-4 text-right">Jumlah</th>
-                    <th class="p-4">Kualitas</th>
-                    <th class="p-4">Keterangan</th>
+                    <th class="p-4 text-right">Quantity</th>
+                    <th class="p-4">Quality</th>
+                    <th class="p-4">Note</th>
                 </tr>
                 </thead>
 
@@ -198,7 +198,7 @@
                 @empty
                     <tr>
                         <td colspan="8" class="p-8 text-center text-gray-400">
-                            Belum ada data barang masuk
+                            No Stock In Data.
                         </td>
                     </tr>
                 @endforelse
@@ -209,7 +209,7 @@
         {{-- PAGINATION --}}
         <div class="px-6 py-4 border-t border-gray-100 flex items-center justify-between bg-gray-50">
             <div class="text-sm text-gray-600">
-                Menampilkan <span class="font-bold">{{ $history->count() }}</span> dari <span class="font-bold">{{ $history->total() }}</span> data barang masuk
+                Showing <span class="font-bold">{{ $history->count() }}</span> from <span class="font-bold">{{ $history->total() }}</span> Stock In
             </div>
             <div class="flex items-center gap-2">
                 {{ $history->appends(request()->query())->links('pagination::tailwind') }}
