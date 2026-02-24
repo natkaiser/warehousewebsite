@@ -7,6 +7,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\StockKeluarController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use App\Models\Stock;
 use App\Models\Supplier;
 use App\Models\Customer;
@@ -103,9 +104,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/stock', [StockController::class, 'index'])->name('stock.index');
     Route::get('/stock/export', [StockController::class, 'export'])->name('stock.export');
     Route::post('/stock', [StockController::class, 'store'])->name('stock.store');
-    Route::put('/stock/{stock}', [StockController::class, 'update'])->name('stock.update');
-    Route::delete('/stock/{stock}', [StockController::class, 'destroy'])->name('stock.destroy');
-
 
 Route::get('/stock-masuk', [StockMasukController::class, 'index'])->name('stockmasuk.index');
 Route::get('/stock-masuk/export/pdf', [StockMasukController::class, 'exportPdf'])->name('stockmasuk.export.pdf');
@@ -122,12 +120,24 @@ Route::get('/stockkeluar', [StockKeluarController::class, 'index']);
 Route::get('/supplier', [SupplierController::class, 'index'])->name('supplier.index');
 Route::get('/supplier/export/pdf', [SupplierController::class, 'exportPdf'])->name('supplier.export.pdf');
 Route::post('/supplier', [SupplierController::class, 'store'])->name('supplier.store');
-Route::put('/supplier/{supplier}', [SupplierController::class, 'update'])->name('supplier.update');
-Route::delete('/supplier/{supplier}', [SupplierController::class, 'destroy'])->name('supplier.destroy');
 
 Route::get('/customer', [CustomerController::class, 'index'])->name('customer.index');
 Route::get('/customer/export/pdf', [CustomerController::class, 'exportPdf'])->name('customer.export.pdf');
 Route::post('/customer', [CustomerController::class, 'store'])->name('customer.store');
-Route::put('/customer/{customer}', [CustomerController::class, 'update'])->name('customer.update');
-Route::delete('/customer/{customer}', [CustomerController::class, 'destroy'])->name('customer.destroy');
+
+Route::middleware('admin')->group(function () {
+    Route::put('/stock/{stock}', [StockController::class, 'update'])->name('stock.update');
+    Route::delete('/stock/{stock}', [StockController::class, 'destroy'])->name('stock.destroy');
+
+    Route::put('/supplier/{supplier}', [SupplierController::class, 'update'])->name('supplier.update');
+    Route::delete('/supplier/{supplier}', [SupplierController::class, 'destroy'])->name('supplier.destroy');
+
+    Route::put('/customer/{customer}', [CustomerController::class, 'update'])->name('customer.update');
+    Route::delete('/customer/{customer}', [CustomerController::class, 'destroy'])->name('customer.destroy');
+
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::post('/users', [UserController::class, 'store'])->name('users.store');
+    Route::put('/users/{user}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+});
 });

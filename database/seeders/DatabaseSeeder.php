@@ -19,28 +19,17 @@ class DatabaseSeeder extends Seeder
         // User::factory(10)->create();
 
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Admin Warehouse',
+            'email' => 'admin@example.com',
             'password' => bcrypt('password'),
+            'role' => 'admin',
         ]);
 
-        // Seed sample suppliers
-        Supplier::create([
-            'nama' => 'PT Sumber Air',
-            'alamat' => 'Jakarta',
-            'telepon' => '021-123456',
-        ]);
-
-        Supplier::create([
-            'nama' => 'CV Bahan Baku Utama',
-            'alamat' => 'Bandung',
-            'telepon' => '022-987654',
-        ]);
-
-        Supplier::create([
-            'nama' => 'PT Pabrik Terpercaya',
-            'alamat' => 'Surabaya',
-            'telepon' => '031-555555',
+        User::factory()->create([
+            'name' => 'Staff Warehouse',
+            'email' => 'staff@example.com',
+            'password' => bcrypt('password'),
+            'role' => 'user',
         ]);
     }
 }

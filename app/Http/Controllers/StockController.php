@@ -11,6 +11,14 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class StockController extends Controller
 {
+    private function generateNoFormTahunan(): string
+    {
+        $tahunSekarang = now()->year;
+        $nomorUrut = Stock::whereYear('created_at', $tahunSekarang)->count() + 1;
+
+        return sprintf('STK/%d/%04d', $tahunSekarang, $nomorUrut);
+    }
+
     public function index(Request $request)
     {
         $query = Stock::latest();
@@ -25,9 +33,15 @@ class StockController extends Controller
             $query->whereRaw('LOWER(nama_barang) LIKE LOWER(?)', ["%{$nama_barang}%"]);
         }
 
+<<<<<<< HEAD
         if ($request->filled('rack_id') && trim($request->rack_id)) {
             $rack_id = trim($request->rack_id);
             $query->whereRaw('LOWER(rack_id) LIKE LOWER(?)', ["%{$rack_id}%"]);
+=======
+        if ($request->filled('rak') && trim($request->rak)) {
+            $rak = trim($request->rak);
+            $query->whereRaw('LOWER(rak) LIKE LOWER(?)', ["%{$rak}%"]);
+>>>>>>> 24713998c3cd3e6207052a0e1ef97b3320ddf0b8
         }
 
         if ($request->filled('spesifikasi') && trim($request->spesifikasi)) {
@@ -45,7 +59,11 @@ class StockController extends Controller
         $request->validate([
             'kode_barang' => 'required|unique:stocks,kode_barang',
             'nama_barang' => 'required',
+<<<<<<< HEAD
             'rack_id' => 'nullable|string|max:100',
+=======
+            'rak' => 'nullable|string|max:100',
+>>>>>>> 24713998c3cd3e6207052a0e1ef97b3320ddf0b8
             'spesifikasi' => 'nullable',
             'satuan' => 'required',
         ]);
@@ -53,13 +71,17 @@ class StockController extends Controller
         Stock::create([
             'kode_barang' => $request->kode_barang,
             'nama_barang' => $request->nama_barang,
+<<<<<<< HEAD
             'rack_id' => $request->rack_id,
+=======
+            'rak' => $request->rak,
+>>>>>>> 24713998c3cd3e6207052a0e1ef97b3320ddf0b8
             'spesifikasi' => $request->spesifikasi,
             'stok' => 0,
             'satuan' => $request->satuan,
         ]);
 
-        return redirect()->back()->with('success', 'Barang berhasil ditambahkan');
+        return redirect()->back()->with('success', 'Product added successfully.');
     }
 
     public function update(Request $request, Stock $stock)
@@ -67,7 +89,11 @@ class StockController extends Controller
         $request->validate([
             'kode_barang' => 'required|unique:stocks,kode_barang,' . $stock->id,
             'nama_barang' => 'required',
+<<<<<<< HEAD
             'rack_id' => 'nullable|string|max:100',
+=======
+            'rak' => 'nullable|string|max:100',
+>>>>>>> 24713998c3cd3e6207052a0e1ef97b3320ddf0b8
             'spesifikasi' => 'nullable',
             'satuan' => 'required',
         ]);
@@ -75,18 +101,22 @@ class StockController extends Controller
         $stock->update([
             'kode_barang' => $request->kode_barang,
             'nama_barang' => $request->nama_barang,
+<<<<<<< HEAD
             'rack_id' => $request->rack_id,
+=======
+            'rak' => $request->rak,
+>>>>>>> 24713998c3cd3e6207052a0e1ef97b3320ddf0b8
             'spesifikasi' => $request->spesifikasi,
             'satuan' => $request->satuan,
         ]);
 
-        return redirect()->back()->with('success', 'Barang berhasil diupdate');
+        return redirect()->back()->with('success', 'Product updated successfully.');
     }
 
     public function destroy(Stock $stock)
     {
         $stock->delete();
-        return redirect()->back()->with('success', 'Barang berhasil dihapus');
+        return redirect()->back()->with('success', 'Product deleted successfully.');
     }
 
     public function export(Request $request)
@@ -105,9 +135,15 @@ class StockController extends Controller
             $query->whereRaw('LOWER(nama_barang) LIKE LOWER(?)', ["%{$nama_barang}%"]);
         }
 
+<<<<<<< HEAD
         if ($request->filled('rack_id') && trim($request->rack_id)) {
             $rack_id = trim($request->rack_id);
             $query->whereRaw('LOWER(rack_id) LIKE LOWER(?)', ["%{$rack_id}%"]);
+=======
+        if ($request->filled('rak') && trim($request->rak)) {
+            $rak = trim($request->rak);
+            $query->whereRaw('LOWER(rak) LIKE LOWER(?)', ["%{$rak}%"]);
+>>>>>>> 24713998c3cd3e6207052a0e1ef97b3320ddf0b8
         }
 
         if ($request->filled('spesifikasi') && trim($request->spesifikasi)) {
@@ -119,9 +155,12 @@ class StockController extends Controller
 
         $pdfData = new StocksPDF($stocks);
         $data = $pdfData->generate();
+        $data['noForm'] = $this->generateNoFormTahunan();
+        $data['tanggalForm'] = now()->format('d-m-Y');
+        $data['total_stok'] = $stocks->sum('stok');
 
         $pdf = Pdf::loadView('pdf.stock-pdf', $data)
-                  ->setPaper('a4', 'landscape');
+                  ->setPaper('a4', 'portrait');
 
         return $pdf->download($filename);
     }
