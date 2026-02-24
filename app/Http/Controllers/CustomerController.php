@@ -33,7 +33,7 @@ class CustomerController extends Controller
 
         Customer::create($request->all());
 
-        return back()->with('success', 'Customer ditambahkan');
+        return back()->with('success', 'Customer added successfully.');
     }
 
     public function update(Request $request, Customer $customer)
@@ -46,7 +46,7 @@ class CustomerController extends Controller
 
         $customer->update($request->all());
 
-        return back()->with('success', 'Customer diperbarui');
+        return back()->with('success', 'Customer updated successfully.');
     }
 
     public function exportPdf(Request $request)
@@ -75,6 +75,6 @@ class CustomerController extends Controller
     {
         $customer->delete();
 
-        return back()->with('success', 'Customer dihapus');
+        return back()->with('success', 'Customer deleted successfully.');
     }
 }

@@ -11,6 +11,14 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class StockController extends Controller
 {
+    private function generateNoFormTahunan(): string
+    {
+        $tahunSekarang = now()->year;
+        $nomorUrut = Stock::whereYear('created_at', $tahunSekarang)->count() + 1;
+
+        return sprintf('STK/%d/%04d', $tahunSekarang, $nomorUrut);
+    }
+
     public function index(Request $request)
     {
         $query = Stock::latest();
@@ -59,7 +67,7 @@ class StockController extends Controller
             'satuan' => $request->satuan,
         ]);
 
-        return redirect()->back()->with('success', 'Barang berhasil ditambahkan');
+        return redirect()->back()->with('success', 'Product added successfully.');
     }
 
     public function update(Request $request, Stock $stock)
@@ -80,13 +88,13 @@ class StockController extends Controller
             'satuan' => $request->satuan,
         ]);
 
-        return redirect()->back()->with('success', 'Barang berhasil diupdate');
+        return redirect()->back()->with('success', 'Product updated successfully.');
     }
 
     public function destroy(Stock $stock)
     {
         $stock->delete();
-        return redirect()->back()->with('success', 'Barang berhasil dihapus');
+        return redirect()->back()->with('success', 'Product deleted successfully.');
     }
 
     public function export(Request $request)
@@ -119,9 +127,12 @@ class StockController extends Controller
 
         $pdfData = new StocksPDF($stocks);
         $data = $pdfData->generate();
+        $data['noForm'] = $this->generateNoFormTahunan();
+        $data['tanggalForm'] = now()->format('d-m-Y');
+        $data['total_stok'] = $stocks->sum('stok');
 
         $pdf = Pdf::loadView('pdf.stock-pdf', $data)
-                  ->setPaper('a4', 'landscape');
+                  ->setPaper('a4', 'portrait');
 
         return $pdf->download($filename);
     }

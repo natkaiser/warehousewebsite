@@ -4,6 +4,8 @@
 
 @section('content')
 
+@php($isAdmin = Auth::user()?->role === 'admin')
+
 <div class="space-y-6">
     {{-- FLASH MESSAGE SUCCESS --}}
     @if (session('success'))
@@ -171,7 +173,9 @@
                     <th class="p-4">Specification</th>
                     <th class="p-4 text-right">Stock</th>
                     <th class="p-4">Unit</th>
-                    <th class="p-4 text-center">Action</th>
+                    @if($isAdmin)
+                        <th class="p-4 text-center">Action</th>
+                    @endif
                 </tr>
                 </thead>
 
@@ -190,38 +194,40 @@
                         <td class="p-4 text-sm text-slate-500">{{ $item->satuan }}</td>
 
                         {{-- AKSI --}}
-                        <td class="p-4 text-center">
-                            <div class="flex justify-center gap-2">
-                                {{-- EDIT --}}
-                                <button
-                                    onclick="openEditModal(
-                                        {{ $item->id }},
-                                        '{{ addslashes($item->kode_barang) }}',
-                                        '{{ addslashes($item->nama_barang) }}',
-                                        '{{ addslashes($item->rak ?? '') }}',
-                                        '{{ addslashes($item->spesifikasi) }}',
-                                        '{{ addslashes($item->satuan) }}'
-                                    )"
-                                    class="text-blue-500 hover:text-blue-700 p-1 bg-blue-50 rounded">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
-                                    </svg>
-                                </button>
+                        @if($isAdmin)
+                            <td class="p-4 text-center">
+                                <div class="flex justify-center gap-2">
+                                    {{-- EDIT --}}
+                                    <button
+                                        onclick="openEditModal(
+                                            {{ $item->id }},
+                                            '{{ addslashes($item->kode_barang) }}',
+                                            '{{ addslashes($item->nama_barang) }}',
+                                            '{{ addslashes($item->rak ?? '') }}',
+                                            '{{ addslashes($item->spesifikasi) }}',
+                                            '{{ addslashes($item->satuan) }}'
+                                        )"
+                                        class="text-blue-500 hover:text-blue-700 p-1 bg-blue-50 rounded">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+                                        </svg>
+                                    </button>
 
-                                {{-- DELETE --}}
-                                <button type="button" onclick="openDeleteModal({{ $item->id }}, '{{ addslashes($item->nama_barang) }}')" class="text-red-500 hover:text-red-700 p-1 bg-red-50 rounded">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>
+                                    {{-- DELETE --}}
+                                    <button type="button" onclick="openDeleteModal({{ $item->id }}, '{{ addslashes($item->nama_barang) }}')" class="text-red-500 hover:text-red-700 p-1 bg-red-50 rounded">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </td>
+                        @endif
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8" class="p-8 text-center">
+                        <td colspan="{{ $isAdmin ? 8 : 7 }}" class="p-8 text-center">
                             <div class="flex flex-col items-center gap-3">
                                 <svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -434,11 +440,11 @@ function downloadPDF() {
         url += '?' + params.join('&');
     }
 
-    showAlert('Mengunduh file PDF...', 'info', 0);
+    showAlert('Downloading PDF...', 'info', 0);
     window.location.href = url;
 
     setTimeout(() => {
-        showAlert('File PDF berhasil diunduh!', 'success', 3000);
+        showAlert('PDF downloaded successfully!', 'success', 3000);
     }, 1000);
 }
 
