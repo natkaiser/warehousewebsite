@@ -35,11 +35,17 @@
 
         <form action="{{ route('stock.store') }}" method="POST">
             @csrf
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Product ID</label>
                     <input type="text" name="kode_barang" id="kodeBarang" required placeholder="Scan barcode or enter manually"
                            class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Rack ID</label>
+                    <input type="text" name="rack_id" placeholder="Example: RACK-A1"
+                           class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
                 </div>
 
                 <div>
@@ -90,7 +96,7 @@
             </button>
         </div>
 
-        <form action="{{ route('stock.index') }}" method="GET" class="flex gap-3">
+        <form id="stockSearchForm" action="{{ route('stock.index') }}" method="GET" class="flex gap-3">
             <div class="flex-1">
                 <input type="text" name="kode_barang"
                        placeholder="Search Product ID..."
@@ -104,6 +110,12 @@
                        class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
             </div>
             <div class="flex-1">
+                <input type="text" name="rack_id"
+                       placeholder="Search Rack ID..."
+                       value="{{ request('rack_id') }}"
+                       class="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+            <div class="flex-1">
                 <input type="text" name="spesifikasi"
                        placeholder="Search Specification..."
                        value="{{ request('spesifikasi') }}"
@@ -112,19 +124,20 @@
             <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-semibold transition">
                 Search
             </button>
-            @if(request('kode_barang') || request('nama_barang') || request('spesifikasi'))
+            @if(request('kode_barang') || request('nama_barang') || request('rack_id') || request('spesifikasi'))
                 <a href="{{ route('stock.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-6 py-2 rounded-lg text-sm font-semibold transition">
                     Reset
                 </a>
             @endif
         </form>
 
-        @if(request('kode_barang') || request('nama_barang') || request('spesifikasi'))
+        @if(request('kode_barang') || request('nama_barang') || request('rack_id') || request('spesifikasi'))
             <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
                 <p class="text-sm text-blue-800">
                     Search Results:
                     @if(request('kode_barang')) Product ID: "{{ request('kode_barang') }}", @endif
                     @if(request('nama_barang')) Product Name: "{{ request('nama_barang') }}", @endif
+                    @if(request('rack_id')) Rack ID: "{{ request('rack_id') }}", @endif
                     @if(request('spesifikasi')) Specification: "{{ request('spesifikasi') }}", @endif
                     <span class="text-blue-600">({{ $stocks->total() }} results found)</span>
                 </p>
@@ -153,6 +166,7 @@
                 <tr>
                     {{-- <th class="p-4">No</th> --}}
                     <th class="p-4">Product ID</th>
+                    <th class="p-4">Rack ID</th>
                     <th class="p-4">Product Name</th>
                     <th class="p-4">Specification</th>
                     <th class="p-4 text-right">Stock</th>
@@ -165,6 +179,7 @@
                 @forelse($stocks as $index => $item)
                     <tr class="hover:bg-gray-50 transition">
                         <td class="p-4 text-sm font-mono text-slate-700">{{ $item->kode_barang }}</td>
+                        <td class="p-4 text-sm font-mono text-slate-700">{{ $item->rack_id ?? '-' }}</td>
                         <td class="p-4 text-sm font-medium text-slate-800">{{ $item->nama_barang }}</td>
                         <td class="p-4 text-sm text-slate-600">
                             <span class="px-2 py-1 bg-gray-100 rounded text-xs font-semibold">
@@ -182,6 +197,7 @@
                                     onclick="openEditModal(
                                         {{ $item->id }},
                                         '{{ addslashes($item->kode_barang) }}',
+                                        '{{ addslashes($item->rack_id ?? '') }}',
                                         '{{ addslashes($item->nama_barang) }}',
                                         '{{ addslashes($item->spesifikasi) }}',
                                         '{{ addslashes($item->satuan) }}'
@@ -277,6 +293,12 @@
                 </div>
 
                 <div>
+                    <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Rack ID</label>
+                    <input type="text" id="editRackId" name="rack_id"
+                           class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                </div>
+
+                <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Product Name</label>
                     <input type="text" id="editNamaBarang" name="nama_barang" required
                            class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent">
@@ -335,8 +357,9 @@
 <script>
 let deleteItemId = null;
 
-function openEditModal(id, kodeBarang, namaBarang, spesifikasi, satuan) {
+function openEditModal(id, kodeBarang, rackId, namaBarang, spesifikasi, satuan) {
     document.getElementById('editKodeBarang').value = kodeBarang;
+    document.getElementById('editRackId').value = rackId;
     document.getElementById('editNamaBarang').value = namaBarang;
     document.getElementById('editSpesifikasi').value = spesifikasi;
     document.getElementById('editSatuan').value = satuan;
@@ -395,14 +418,17 @@ document.addEventListener('keydown', function(e) {
 
 // Fungsi export PDF
 function downloadPDF() {
-    const kodeBarang = document.querySelector('input[name="kode_barang"]').value;
-    const namaBarang = document.querySelector('input[name="nama_barang"]').value;
-    const spesifikasi = document.querySelector('input[name="spesifikasi"]').value;
+    const searchForm = document.getElementById('stockSearchForm');
+    const kodeBarang = searchForm.querySelector('input[name="kode_barang"]').value;
+    const namaBarang = searchForm.querySelector('input[name="nama_barang"]').value;
+    const rackId = searchForm.querySelector('input[name="rack_id"]').value;
+    const spesifikasi = searchForm.querySelector('input[name="spesifikasi"]').value;
     let url = '{{ route("stock.export") }}';
     const params = [];
 
     if (kodeBarang) params.push('kode_barang=' + encodeURIComponent(kodeBarang));
     if (namaBarang) params.push('nama_barang=' + encodeURIComponent(namaBarang));
+    if (rackId) params.push('rack_id=' + encodeURIComponent(rackId));
     if (spesifikasi) params.push('spesifikasi=' + encodeURIComponent(spesifikasi));
 
     if (params.length > 0) {

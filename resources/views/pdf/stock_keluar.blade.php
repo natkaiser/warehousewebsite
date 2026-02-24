@@ -242,11 +242,12 @@
                         <th style="width: 5%;">No</th>
                         <th style="width: 8%;">Tanggal</th>
                         <th style="width: 8%;">Kode Barang</th>
-                        <th style="width: 18%;">Nama Barang</th>
-                        <th style="width: 20%;">Customer</th>
+                        <th style="width: 10%;">Rack ID</th>
+                        <th style="width: 15%;">Nama Barang</th>
+                        <th style="width: 18%;">Customer</th>
                         <th style="width: 8%; text-align: center;">Jumlah</th>
                         <th style="width: 10%;">Kualitas</th>
-                        <th style="width: 23%;">Keterangan</th>
+                        <th style="width: 18%;">Keterangan</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -257,11 +258,13 @@
                             <td class="text-center">{{ $index + 1 }}</td>
                             <td>{{ \Carbon\Carbon::parse($row->tanggal)->format('d-m-Y') }}</td>
                             <td><strong>{{ $row->stock->kode_barang }}</strong></td>
+                            <td>{{ $row->stock->rack_id ?? '-' }}</td>
                             <td>{{ $row->stock->nama_barang }}</td>
                             <td>{{ $row->customer->nama }}</td>
                             <td class="text-center"><strong>{{ $row->jumlah }}</strong></td>
                             <td>{{ $row->kualitas ?? '-' }}</td>
                             <td>{{ $row->keterangan ?? '-' }}</td>
+                        </tr>
                     @endforeach
                 </tbody>
             </table>

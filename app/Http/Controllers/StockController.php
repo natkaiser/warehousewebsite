@@ -25,6 +25,11 @@ class StockController extends Controller
             $query->whereRaw('LOWER(nama_barang) LIKE LOWER(?)', ["%{$nama_barang}%"]);
         }
 
+        if ($request->filled('rack_id') && trim($request->rack_id)) {
+            $rack_id = trim($request->rack_id);
+            $query->whereRaw('LOWER(rack_id) LIKE LOWER(?)', ["%{$rack_id}%"]);
+        }
+
         if ($request->filled('spesifikasi') && trim($request->spesifikasi)) {
             $spesifikasi = trim($request->spesifikasi);
             $query->whereRaw('LOWER(spesifikasi) LIKE LOWER(?)', ["%{$spesifikasi}%"]);
@@ -40,6 +45,7 @@ class StockController extends Controller
         $request->validate([
             'kode_barang' => 'required|unique:stocks,kode_barang',
             'nama_barang' => 'required',
+            'rack_id' => 'nullable|string|max:100',
             'spesifikasi' => 'nullable',
             'satuan' => 'required',
         ]);
@@ -47,6 +53,7 @@ class StockController extends Controller
         Stock::create([
             'kode_barang' => $request->kode_barang,
             'nama_barang' => $request->nama_barang,
+            'rack_id' => $request->rack_id,
             'spesifikasi' => $request->spesifikasi,
             'stok' => 0,
             'satuan' => $request->satuan,
@@ -60,6 +67,7 @@ class StockController extends Controller
         $request->validate([
             'kode_barang' => 'required|unique:stocks,kode_barang,' . $stock->id,
             'nama_barang' => 'required',
+            'rack_id' => 'nullable|string|max:100',
             'spesifikasi' => 'nullable',
             'satuan' => 'required',
         ]);
@@ -67,6 +75,7 @@ class StockController extends Controller
         $stock->update([
             'kode_barang' => $request->kode_barang,
             'nama_barang' => $request->nama_barang,
+            'rack_id' => $request->rack_id,
             'spesifikasi' => $request->spesifikasi,
             'satuan' => $request->satuan,
         ]);
@@ -94,6 +103,11 @@ class StockController extends Controller
         if ($request->filled('nama_barang') && trim($request->nama_barang)) {
             $nama_barang = trim($request->nama_barang);
             $query->whereRaw('LOWER(nama_barang) LIKE LOWER(?)', ["%{$nama_barang}%"]);
+        }
+
+        if ($request->filled('rack_id') && trim($request->rack_id)) {
+            $rack_id = trim($request->rack_id);
+            $query->whereRaw('LOWER(rack_id) LIKE LOWER(?)', ["%{$rack_id}%"]);
         }
 
         if ($request->filled('spesifikasi') && trim($request->spesifikasi)) {

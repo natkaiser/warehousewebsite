@@ -39,7 +39,7 @@
                     <select name="stock_id" class="select2 w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm" required>
                         <option></option>
                         @foreach($masterBarang as $b)
-                            <option value="{{ $b->id }}">{{ $b->kode_barang }} - {{ $b->nama_barang }} (Stok: {{ $b->stok }})</option>
+                            <option value="{{ $b->id }}">{{ $b->kode_barang }} | Rack: {{ $b->rack_id ?? '-' }} - {{ $b->nama_barang }} (Stok: {{ $b->stok }})</option>
                         @endforeach
                     </select>
                 </div>
@@ -177,6 +177,7 @@
                     <th class="p-4">No</th>
                     <th class="p-4">Date</th>
                     <th class="p-4">Product ID</th>
+                    <th class="p-4">Rack ID</th>
                     <th class="p-4">Product Name</th>
                     <th class="p-4">Customer</th>
                     <th class="p-4 text-right">Quantity</th>
@@ -191,6 +192,7 @@
                         <td class="p-4 text-sm text-gray-600">{{ ($history->currentPage() - 1) * 10 + $i + 1 }}</td>
                         <td class="p-4 text-sm text-gray-600">{{ $row->tanggal }}</td>
                         <td class="p-4 text-sm font-mono text-slate-700">{{ $row->stock->kode_barang }}</td>
+                        <td class="p-4 text-sm font-mono text-slate-700">{{ $row->stock->rack_id ?? '-' }}</td>
                         <td class="p-4 text-sm font-medium text-slate-800">{{ $row->stock->nama_barang }}</td>
                         <td class="p-4 text-sm text-slate-600">{{ $row->customer->nama }}</td>
                         <td class="p-4 text-sm font-bold text-right text-slate-800">{{ $row->jumlah }}</td>
@@ -199,7 +201,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8" class="p-8 text-center text-gray-400">
+                        <td colspan="9" class="p-8 text-center text-gray-400">
                             No Stock Out Data.
                         </td>
                     </tr>
