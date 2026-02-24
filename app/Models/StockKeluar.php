@@ -14,6 +14,7 @@ class StockKeluar extends Model
         'stock_id',
         'customer_id',
         'jumlah',
+        'kualitas',
         'keterangan'
     ];
 
@@ -27,4 +28,3 @@ class StockKeluar extends Model
         return $this->belongsTo(Customer::class);
     }
 }
-

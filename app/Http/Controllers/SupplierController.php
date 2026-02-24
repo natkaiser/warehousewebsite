@@ -34,7 +34,7 @@ class SupplierController extends Controller
 
         Supplier::create($request->all());
 
-        return back()->with('success', 'Supplier ditambahkan');
+        return back()->with('success', 'Supplier added successfully.');
     }
 
     public function update(Request $request, Supplier $supplier)
@@ -47,14 +47,14 @@ class SupplierController extends Controller
 
         $supplier->update($request->all());
 
-        return back()->with('success', 'Supplier diperbarui');
+        return back()->with('success', 'Supplier updated successfully.');
     }
 
     public function destroy(Supplier $supplier)
     {
         $supplier->delete();
 
-        return back()->with('success', 'Supplier dihapus');
+        return back()->with('success', 'Supplier deleted successfully.');
     }
 
     public function exportPdf(Request $request)
