@@ -18,7 +18,7 @@
     {{-- FLASH MESSAGE ERROR --}}
     @if (session('error'))
         <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg" role="alert">
-            <p class="font-bold">Error!</p>
+            <p class="font-bold">Error.</p>
             <p class="text-sm">{{ session('error') }}</p>
         </div>
     @endif
