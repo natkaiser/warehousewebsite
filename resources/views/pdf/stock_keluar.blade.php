@@ -239,7 +239,7 @@
 </head>
 <body>
     @if(isset($isForm) && $isForm)
-        <div class="title">goods expenditure form</div>
+        <div class="title">Goods Expenditure Form</div>
 
         <table class="meta-table">
             <tr>
@@ -313,10 +313,9 @@
                     </td>
                 </tr>
             </table>
-
             <div class="signature-manager">
                 <div class="signature-line"></div>
-                warehouse manager
+                Warehouse Manager
             </div>
         </div>
     @else
