@@ -39,8 +39,8 @@ Route::get('/', function () {
     // Fetch recent activities
     $recentStockMasuk = StockMasuk::with('stock', 'supplier')->latest()->take(1)->get()->map(function($item) {
         return [
-            'type' => 'Barang Masuk',
-            'message' => "Menambahkan {$item->jumlah} {$item->stock->satuan} \"{$item->stock->nama_barang}\" dari {$item->supplier->nama}",
+            'type' => 'Stock In',
+            'message' => "Added {$item->jumlah} {$item->stock->satuan} \"{$item->stock->nama_barang}\" from {$item->supplier->nama}",
             'time' => $item->created_at->diffForHumans(),
             'color' => 'green',
             'created_at' => $item->created_at
@@ -49,8 +49,8 @@ Route::get('/', function () {
 
     $recentStockKeluar = StockKeluar::with('stock', 'customer')->latest()->take(1)->get()->map(function($item) {
         return [
-            'type' => 'Barang Keluar',
-            'message' => "Pengeluaran {$item->jumlah} {$item->stock->satuan} \"{$item->stock->nama_barang}\" ke {$item->customer->nama}",
+            'type' => 'Stock Out',
+            'message' => "Issued {$item->jumlah} {$item->stock->satuan} \"{$item->stock->nama_barang}\" to {$item->customer->nama}",
             'time' => $item->created_at->diffForHumans(),
             'color' => 'red',
             'created_at' => $item->created_at
@@ -59,8 +59,8 @@ Route::get('/', function () {
 
     $recentSuppliers = Supplier::latest()->take(1)->get()->map(function($item) {
         return [
-            'type' => 'Supplier Baru',
-            'message' => "Input Data Supplier \"{$item->nama}\"",
+            'type' => 'New Supplier',
+            'message' => "Added supplier \"{$item->nama}\"",
             'time' => $item->created_at->diffForHumans(),
             'color' => 'blue',
             'created_at' => $item->created_at
@@ -69,8 +69,8 @@ Route::get('/', function () {
 
     $recentCustomers = Customer::latest()->take(1)->get()->map(function($item) {
         return [
-            'type' => 'Customer Baru',
-            'message' => "Input Data Customer \"{$item->nama}\"",
+            'type' => 'New Customer',
+            'message' => "Added customer \"{$item->nama}\"",
             'time' => $item->created_at->diffForHumans(),
             'color' => 'emerald',
             'created_at' => $item->created_at
@@ -79,8 +79,8 @@ Route::get('/', function () {
 
     $recentStocks = Stock::latest()->take(1)->get()->map(function($item) {
         return [
-            'type' => 'Stok Baru',
-            'message' => "Input Data Barang \"{$item->nama_barang}\"",
+            'type' => 'New Product',
+            'message' => "Added product \"{$item->nama_barang}\"",
             'time' => $item->created_at->diffForHumans(),
             'color' => 'purple',
             'created_at' => $item->created_at

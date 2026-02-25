@@ -23,6 +23,18 @@
         </div>
     @endif
 
+    {{-- VALIDATION ERRORS --}}
+    @if ($errors->any())
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg" role="alert">
+            <p class="font-bold">Data failed to save.</p>
+            <ul class="list-disc list-inside text-sm mt-1">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     {{-- FORM TAMBAH BARANG --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <div class="flex items-center gap-2 mb-6">
@@ -41,31 +53,51 @@
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Product ID</label>
                     <input type="text" name="kode_barang" id="kodeBarang" required placeholder="Scan barcode or enter manually"
+                           value="{{ old('kode_barang') }}"
                            class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-green-500 focus:border-transparent">
+                    @error('kode_barang')
+                        <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Product Name</label>
                     <input type="text" name="nama_barang" required placeholder="Example: Oreo Vanilla"
+                           value="{{ old('nama_barang') }}"
                            class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                    @error('nama_barang')
+                        <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Rack</label>
                     <input type="text" name="rak" placeholder="Example: A1-03"
+                           value="{{ old('rak') }}"
                            class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                    @error('rak')
+                        <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Specification</label>
                     <input type="text" name="spesifikasi" placeholder="Example : 350ml, 1kg, dll"
+                           value="{{ old('spesifikasi') }}"
                            class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                    @error('spesifikasi')
+                        <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 <div>
                     <label class="block text-xs font-semibold text-gray-400 mb-1 uppercase tracking-wider">Unit</label>
                     <input type="text" name="satuan" required placeholder="Example : pcs, botol, kg, dll"
+                           value="{{ old('satuan') }}"
                            class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm">
+                    @error('satuan')
+                        <p class="text-xs text-red-600 mt-1">{{ $message }}</p>
+                    @enderror
                 </div>
             </div>
 

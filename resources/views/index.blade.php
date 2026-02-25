@@ -52,27 +52,58 @@
 
     <div class="bg-white rounded-xl shadow-sm border border-gray-100">
         <div class="p-6 border-b border-gray-100 flex justify-between items-center">
-            <h3 class="font-bold text-slate-800 text-lg">Latest Activites</h3>
+            <h3 class="font-bold text-slate-800 text-lg">Latest Activities</h3>
         </div>
 
         <div class="p-6">
             <div class="space-y-6 border-l-2 border-dashed border-gray-200 ml-3">
                 @forelse($recentActivities as $activity)
-                <div class="relative pl-8 sm:pl-12">
-                    <div class="absolute -left-2.5 top-1 bg-{{ $activity['color'] }}-500 h-5 w-5 rounded-full border-4 border-white"></div>
+
+                @php
+                    // Map the colors so Tailwind CSS picks them up during the build process
+                    $bgColor = match($activity['color'] ?? 'gray') {
+                        'red' => 'bg-red-500',
+                        'green' => 'bg-green-500',
+                        'purple' => 'bg-purple-500',
+                        'blue' => 'bg-blue-500',
+                        'yellow' => 'bg-yellow-500',
+                        default => 'bg-gray-500',
+                    };
+
+                    $badgeBg = match($activity['color'] ?? 'gray') {
+                        'red' => 'bg-red-100',
+                        'green' => 'bg-green-100',
+                        'purple' => 'bg-purple-100',
+                        'blue' => 'bg-blue-100',
+                        'yellow' => 'bg-yellow-100',
+                        default => 'bg-gray-100',
+                    };
+
+                    $badgeText = match($activity['color'] ?? 'gray') {
+                        'red' => 'text-red-600',
+                        'green' => 'text-green-600',
+                        'purple' => 'text-purple-600',
+                        'blue' => 'text-blue-600',
+                        'yellow' => 'text-yellow-600',
+                        default => 'text-gray-600',
+                    };
+                @endphp
+
+                <div class="relative pl-12 sm:pl-12">
+                    <div class="absolute -left-[11px] top-1 {{ $bgColor }} h-5 w-5 rounded-full border-4 border-white shadow-sm"></div>
 
                     <div class="flex flex-col sm:flex-row justify-between sm:items-center">
                         <div>
-                            <span class="text-xs font-semibold text-{{ $activity['color'] }}-600 bg-{{ $activity['color'] }}-100 px-2 py-1 rounded-md">{{ $activity['type'] }}</span>
+                            <span class="text-xs font-semibold {{ $badgeText }} {{ $badgeBg }} px-2 py-1 rounded-md">{{ $activity['type'] }}</span>
                             <p class="text-sm font-medium text-slate-800 mt-1">{{ $activity['message'] }}</p>
-                            <p class="text-xs text-gray-400 mt-1">Oleh: Admin</p>
+                            <p class="text-xs text-gray-400 mt-1">By: Admin</p>
                         </div>
                         <span class="text-xs text-gray-400 mt-2 sm:mt-0">{{ $activity['time'] }}</span>
                     </div>
                 </div>
                 @empty
                 <div class="text-center text-gray-500 py-4">
-                    Tidak ada aktivitas terbaru.
+                    No recent activities.
                 </div>
                 @endforelse
             </div>

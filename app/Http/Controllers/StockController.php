@@ -50,6 +50,14 @@ class StockController extends Controller
 
     public function store(Request $request)
     {
+        $request->merge([
+            'kode_barang' => trim((string) $request->kode_barang),
+            'nama_barang' => trim((string) $request->nama_barang),
+            'rak' => ($rak = trim((string) $request->rak)) === '' ? null : $rak,
+            'spesifikasi' => ($spesifikasi = trim((string) $request->spesifikasi)) === '' ? null : $spesifikasi,
+            'satuan' => trim((string) $request->satuan),
+        ]);
+
         $request->validate([
             'kode_barang' => 'required|unique:stocks,kode_barang',
             'nama_barang' => 'required',
@@ -67,7 +75,7 @@ class StockController extends Controller
             'satuan' => $request->satuan,
         ]);
 
-        return redirect()->back()->with('success', 'Product added successfully.');
+        return redirect()->route('stock.index')->with('success', 'Product added successfully.');
     }
 
     public function update(Request $request, Stock $stock)
