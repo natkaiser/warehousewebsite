@@ -33,15 +33,9 @@ class StockController extends Controller
             $query->whereRaw('LOWER(nama_barang) LIKE LOWER(?)', ["%{$nama_barang}%"]);
         }
 
-<<<<<<< HEAD
-        if ($request->filled('rack_id') && trim($request->rack_id)) {
-            $rack_id = trim($request->rack_id);
-            $query->whereRaw('LOWER(rack_id) LIKE LOWER(?)', ["%{$rack_id}%"]);
-=======
         if ($request->filled('rak') && trim($request->rak)) {
             $rak = trim($request->rak);
             $query->whereRaw('LOWER(rak) LIKE LOWER(?)', ["%{$rak}%"]);
->>>>>>> 24713998c3cd3e6207052a0e1ef97b3320ddf0b8
         }
 
         if ($request->filled('spesifikasi') && trim($request->spesifikasi)) {
@@ -59,11 +53,7 @@ class StockController extends Controller
         $request->validate([
             'kode_barang' => 'required|unique:stocks,kode_barang',
             'nama_barang' => 'required',
-<<<<<<< HEAD
-            'rack_id' => 'nullable|string|max:100',
-=======
             'rak' => 'nullable|string|max:100',
->>>>>>> 24713998c3cd3e6207052a0e1ef97b3320ddf0b8
             'spesifikasi' => 'nullable',
             'satuan' => 'required',
         ]);
@@ -71,11 +61,7 @@ class StockController extends Controller
         Stock::create([
             'kode_barang' => $request->kode_barang,
             'nama_barang' => $request->nama_barang,
-<<<<<<< HEAD
-            'rack_id' => $request->rack_id,
-=======
             'rak' => $request->rak,
->>>>>>> 24713998c3cd3e6207052a0e1ef97b3320ddf0b8
             'spesifikasi' => $request->spesifikasi,
             'stok' => 0,
             'satuan' => $request->satuan,
@@ -89,11 +75,7 @@ class StockController extends Controller
         $request->validate([
             'kode_barang' => 'required|unique:stocks,kode_barang,' . $stock->id,
             'nama_barang' => 'required',
-<<<<<<< HEAD
-            'rack_id' => 'nullable|string|max:100',
-=======
             'rak' => 'nullable|string|max:100',
->>>>>>> 24713998c3cd3e6207052a0e1ef97b3320ddf0b8
             'spesifikasi' => 'nullable',
             'satuan' => 'required',
         ]);
@@ -101,11 +83,7 @@ class StockController extends Controller
         $stock->update([
             'kode_barang' => $request->kode_barang,
             'nama_barang' => $request->nama_barang,
-<<<<<<< HEAD
-            'rack_id' => $request->rack_id,
-=======
             'rak' => $request->rak,
->>>>>>> 24713998c3cd3e6207052a0e1ef97b3320ddf0b8
             'spesifikasi' => $request->spesifikasi,
             'satuan' => $request->satuan,
         ]);
@@ -135,15 +113,9 @@ class StockController extends Controller
             $query->whereRaw('LOWER(nama_barang) LIKE LOWER(?)', ["%{$nama_barang}%"]);
         }
 
-<<<<<<< HEAD
-        if ($request->filled('rack_id') && trim($request->rack_id)) {
-            $rack_id = trim($request->rack_id);
-            $query->whereRaw('LOWER(rack_id) LIKE LOWER(?)', ["%{$rack_id}%"]);
-=======
         if ($request->filled('rak') && trim($request->rak)) {
             $rak = trim($request->rak);
             $query->whereRaw('LOWER(rak) LIKE LOWER(?)', ["%{$rak}%"]);
->>>>>>> 24713998c3cd3e6207052a0e1ef97b3320ddf0b8
         }
 
         if ($request->filled('spesifikasi') && trim($request->spesifikasi)) {
