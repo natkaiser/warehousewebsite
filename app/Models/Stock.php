@@ -12,6 +12,8 @@ class Stock extends Model
     protected $fillable = [
         'kode_barang',
         'nama_barang',
+        'rack_id',
+        'rak',
         'spesifikasi',
         'stok',
         'satuan',

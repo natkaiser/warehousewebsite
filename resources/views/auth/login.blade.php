@@ -4,18 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Warehouse System</title>
-    
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-['Inter'] antialiased bg-gray-50 text-slate-800">
 
     <div class="min-h-screen flex">
-        
+
         <div class="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:flex-none lg:px-20 xl:px-24 bg-white w-full lg:w-1/2 border-r border-gray-100">
             <div class="mx-auto w-full max-w-sm lg:w-96">
-                
+
                 <div class="mb-8">
                     <div class="h-10 w-10 bg-indigo-600 rounded-lg flex items-center justify-center mb-4">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -24,7 +24,7 @@
                     </div>
                     <h2 class="text-3xl font-bold tracking-tight text-gray-900">Warehouse System</h2>
                     <p class="mt-2 text-sm text-gray-500">
-                        Selamat datang kembali. Silakan masuk ke akun Anda.
+                        Selamat datang. Silakan masuk ke akun Anda.
                     </p>
                 </div>
 
@@ -51,7 +51,7 @@
                 <div class="mt-2">
                     <form method="POST" action="{{ route('login') }}" class="space-y-6">
                         @csrf
-                        
+
                         <div>
                             <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
                             <div class="mt-1 relative rounded-md shadow-sm">
@@ -63,7 +63,7 @@
                                 </div>
                                 <input id="email" name="email" type="email" autocomplete="email" required value="{{ old('email') }}"
                                     class="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out"
-                                    placeholder="test@example.com">
+                                    placeholder="user@warehouse.com">
                             </div>
                         </div>
 
@@ -98,8 +98,8 @@
         </div>
 
         <div class="hidden lg:block relative w-0 flex-1">
-            <div class="absolute inset-0 bg-gray-900/10 z-10"></div> <img class="absolute inset-0 h-full w-full object-cover" 
-                 src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80" 
+            <div class="absolute inset-0 bg-gray-900/10 z-10"></div> <img class="absolute inset-0 h-full w-full object-cover"
+                 src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80"
                  alt="Warehouse Shelves">
         </div>
     </div>

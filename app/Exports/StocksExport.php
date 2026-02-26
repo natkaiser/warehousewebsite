@@ -29,7 +29,9 @@ class StocksExport implements FromCollection, WithHeadings, WithStyles, ShouldAu
             return [
                 'no' => $index + 1,
                 'kode_barang' => $item->kode_barang,
+                'rack_id' => $item->rack_id ?? '-',
                 'nama_barang' => $item->nama_barang,
+                'rak' => $item->rak ?? '-',
                 'spesifikasi' => $item->spesifikasi ?? '-',
                 'stok' => $item->stok,
                 'satuan' => $item->satuan,
@@ -43,7 +45,9 @@ class StocksExport implements FromCollection, WithHeadings, WithStyles, ShouldAu
         return [
             'No',
             'Kode Barang',
+            'Rack ID',
             'Nama Barang',
+            'Rak',
             'Spesifikasi',
             'Stok',
             'Satuan',
@@ -53,7 +57,7 @@ class StocksExport implements FromCollection, WithHeadings, WithStyles, ShouldAu
 
     public function styles($sheet)
     {
-        $sheet->getStyle('A1:G1')->applyFromArray([
+        $sheet->getStyle('A1:H1')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'color' => ['rgb' => 'FFFFFF'],
@@ -77,7 +81,7 @@ class StocksExport implements FromCollection, WithHeadings, WithStyles, ShouldAu
         ]);
 
         // Style untuk data rows
-        $sheet->getStyle('A2:G' . ($this->collection()->count() + 1))->applyFromArray([
+        $sheet->getStyle('A2:H' . ($this->collection()->count() + 1))->applyFromArray([
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_LEFT,
                 'vertical' => Alignment::VERTICAL_CENTER,
@@ -97,7 +101,7 @@ class StocksExport implements FromCollection, WithHeadings, WithStyles, ShouldAu
             ],
         ]);
         
-        $sheet->getStyle('E2:E' . ($this->collection()->count() + 1))->applyFromArray([
+        $sheet->getStyle('F2:F' . ($this->collection()->count() + 1))->applyFromArray([
             'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
             ],
@@ -109,7 +113,7 @@ class StocksExport implements FromCollection, WithHeadings, WithStyles, ShouldAu
         // Alternate row colors (striped)
         for ($i = 2; $i <= $this->collection()->count() + 1; $i++) {
             if ($i % 2 === 0) {
-                $sheet->getStyle('A' . $i . ':G' . $i)->getFill()
+                $sheet->getStyle('A' . $i . ':H' . $i)->getFill()
                     ->setFillType(Fill::FILL_SOLID)
                     ->getStartColor()->setRGB('F9FAFB'); // gray-50
             }

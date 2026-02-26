@@ -5,12 +5,24 @@ namespace App\Http\Controllers;
 use App\Models\Stock;
 use App\Models\Supplier;
 use App\Models\StockMasuk;
+use App\Services\FormNumberService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class StockMasukController extends Controller
 {
+    public function __construct(private FormNumberService $formNumberService)
+    {
+    }
+
+    private function generateNoFormTahunan(): string
+    {
+        $currentCount = StockMasuk::whereYear('tanggal', now()->year)->count();
+
+        return $this->formNumberService->next('stock_masuk', 'GIN', $currentCount);
+    }
+
     public function index(Request $request)
     {
         $stocks = Stock::orderBy('nama_barang')->get();
@@ -60,7 +72,7 @@ class StockMasukController extends Controller
             $stock->save();
         });
 
-        return redirect()->back()->with('success', 'Barang masuk berhasil disimpan & stok bertambah');
+        return redirect()->back()->with('success', 'Stock in recorded successfully and inventory updated.');
     }
 
     public function exportPdf(Request $request)
@@ -85,12 +97,27 @@ class StockMasukController extends Controller
             ->latest()
             ->get();
 
+        $supplierForm = trim((string) $request->supplier);
+        if ($supplierForm === '') {
+            if ($history->count() > 0) {
+                $daftarSupplier = $history->pluck('supplier.nama')->filter()->unique()->values();
+                $supplierForm = $daftarSupplier->count() === 1 ? (string) $daftarSupplier->first() : 'Multiple Supplier';
+            } else {
+                $supplierForm = '-';
+            }
+        }
+
+        $tanggalForm = $request->filled('tanggal')
+            ? \Carbon\Carbon::parse($request->tanggal)->format('d-m-Y')
+            : now()->format('d-m-Y');
+
         $pdf = Pdf::loadView('pdf.stock_masuk', [
+            'isForm' => true,
             'history' => $history,
-            'nama_barang' => $request->nama_barang,
-            'supplier' => $request->supplier,
-            'tanggal' => $request->tanggal
-        ])->setPaper('a4', 'landscape');
+            'noForm' => $this->generateNoFormTahunan(),
+            'tanggalForm' => $tanggalForm,
+            'supplierForm' => $supplierForm,
+        ])->setPaper('a4', 'portrait');
 
         $filename = 'Stock_Masuk_' . date('Y-m-d_His') . '.pdf';
         return $pdf->download($filename);
@@ -98,7 +125,12 @@ class StockMasukController extends Controller
 
     public function formPenerimaanBarang()
     {
-        $pdf = Pdf::loadView('pdf.stock_masuk', ['isForm' => true])
+        $pdf = Pdf::loadView('pdf.stock_masuk', [
+            'isForm' => true,
+            'noForm' => $this->generateNoFormTahunan(),
+            'tanggalForm' => now()->format('d-m-Y'),
+            'supplierForm' => '-',
+        ])
                    ->setPaper('a4', 'portrait');
 
         $filename = 'Form_Penerimaan_Barang_' . date('Y-m-d_His') . '.pdf';

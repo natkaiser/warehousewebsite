@@ -2,168 +2,207 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Laporan Stock Barang</title>
+    <title>Goods Stock Form</title>
     <style>
+        @page {
+            margin: 22px;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
-            color: #333;
+            color: #111;
+            font-size: 14px;
         }
-        
-        .header {
+
+        .title {
+            margin: 10px 0 16px;
             text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 3px solid #2c3e50;
-            padding-bottom: 15px;
+            font-size: 30px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
         }
-        
-        .header h1 {
-            margin: 0;
-            color: #2c3e50;
-            font-size: 24px;
+
+        .meta-table {
+            width: 60%;
+            border-collapse: collapse;
+            margin-bottom: 12px;
         }
-        
-        .header p {
-            margin: 5px 0;
-            color: #666;
-            font-size: 12px;
+
+        .meta-table td {
+            padding: 4px 0;
+            font-size: 20px;
+            font-weight: 400;
         }
-        
-        .info {
-            margin-bottom: 20px;
-            font-size: 12px;
+
+        .meta-label {
+            width: 50%;
         }
-        
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
+
+        .meta-colon {
+            width: 6%;
+            text-align: center;
         }
-        
-        table {
+
+        .meta-value {
+            border-bottom: 1px solid #111;
+            padding-left: 10px;
+        }
+
+        .main-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 6px;
+            table-layout: fixed;
         }
-        
-        table thead {
-            background-color: #34495e;
-            color: white;
+
+        .main-table th,
+        .main-table td {
+            border: 1px solid #111;
+            padding: 4px 6px;
+            line-height: 1.2;
+            font-weight: 400;
         }
-        
-        table th {
-            padding: 12px;
+
+        .main-table th {
+            text-align: center;
+            font-size: 11px;
+            height: 24px;
+        }
+
+        .main-table td {
+            font-size: 10px;
+            text-align: center;
+            vertical-align: top;
+        }
+
+        .main-table .text-left {
             text-align: left;
-            font-weight: bold;
-            border: 1px solid #ddd;
-            font-size: 13px;
+            word-break: break-word;
         }
-        
-        table td {
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            font-size: 12px;
-        }
-        
-        table tbody tr:nth-child(even) {
-            background-color: #ecf0f1;
-        }
-        
-        table tbody tr:hover {
-            background-color: #e8e8e8;
-        }
-        
-        .text-right {
+
+        .main-table .text-right {
             text-align: right;
         }
-        
-        .text-center {
+
+        .signature-wrapper {
+            margin-top: 85px;
+        }
+
+        .signature-row {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .signature-col {
+            width: 33%;
             text-align: center;
-        }
-        
-        .footer {
-            margin-top: 40px;
-            padding-top: 15px;
-            border-top: 1px solid #ddd;
-            font-size: 11px;
-            color: #999;
-            text-align: center;
-        }
-        
-        .summary {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #ecf0f1;
-            border-radius: 5px;
-        }
-        
-        .summary-row {
+            vertical-align: top;
             font-size: 13px;
-            margin: 5px 0;
-            font-weight: bold;
+            font-weight: 400;
+        }
+
+        .signature-gap {
+            width: 34%;
+        }
+
+        .signature-line {
+            width: 300px;
+            border-top: 1px solid #111;
+            margin: 0 auto 12px;
+        }
+
+        .signature-manager {
+            margin-top: 55px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 400;
+        }
+
+        .signature-manager .signature-line {
+            width: 280px;
+            margin: 0 auto 32px;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>LAPORAN STOCK BARANG</h1>
-        <p>Dicetak pada: {{ $tanggal }}</p>
-    </div>
-    
-    <div class="info">
-        <div class="info-row">
-            <span><strong>Total Item:</strong> {{ $total_items }}</span>
-            <span><strong>Status:</strong> Aktif</span>
-        </div>
-    </div>
-    
-    <table>
+    <div class="title">Goods Stock Form</div>
+
+    <table class="meta-table">
+        <tr>
+            <td class="meta-label">No. Form</td>
+            <td class="meta-colon">:</td>
+            <td class="meta-value">{{ $noForm ?? '' }}</td>
+        </tr>
+        <tr>
+            <td class="meta-label">Date</td>
+            <td class="meta-colon">:</td>
+            <td class="meta-value">{{ $tanggalForm ?? now()->format('d-m-Y') }}</td>
+        </tr>
+        <tr>
+            <td class="meta-label">Total Item</td>
+            <td class="meta-colon">:</td>
+            <td class="meta-value">{{ $total_items ?? 0 }}</td>
+        </tr>
+    </table>
+
+    <table class="main-table">
         <thead>
             <tr>
-                <th style="width: 5%;">No</th>
-                <th style="width: 12%;">Kode Barang</th>
-                <th style="width: 25%;">Nama Barang</th>
-                <th style="width: 20%;">Spesifikasi</th>
-                <th style="width: 12%; text-align: right;">Stok</th>
-                <th style="width: 12%;">Satuan</th>
+                <th style="width: 7%;">No</th>
+                <th style="width: 20%;">Product Name</th>
+                <th style="width: 14%;">Product Id</th>
+                <th style="width: 10%;">Rack</th>
+                <th style="width: 20%;">Specification</th>
+                <th style="width: 10%;">Quantity</th>
+                <th style="width: 9%;">Unit</th>
             </tr>
         </thead>
         <tbody>
-            @php $totalStok = 0; @endphp
-            @forelse($stocks as $index => $item)
-                @php $totalStok += $item->stok; @endphp
+            @if(($stocks ?? collect())->count() > 0)
+                @foreach($stocks as $index => $item)
+                    <tr>
+                        <td>{{ $index + 1 }}</td>
+                        <td class="text-left">{{ $item->nama_barang ?? '-' }}</td>
+                        <td>{{ $item->kode_barang ?? '-' }}</td>
+                        <td>{{ $item->rak ?? '-' }}</td>
+                        <td class="text-left">{{ $item->spesifikasi ?? '-' }}</td>
+                        <td class="text-right">{{ $item->stok ?? 0 }}</td>
+                        <td>{{ $item->satuan ?? '-' }}</td>
+                    </tr>
+                @endforeach
+            @else
                 <tr>
-                    <td class="text-center">{{ $index + 1 }}</td>
-                    <td><strong>{{ $item->kode_barang }}</strong></td>
-                    <td>{{ $item->nama_barang }}</td>
-                    <td>{{ $item->spesifikasi ?? '-' }}</td>
-                    <td class="text-right"><strong>{{ $item->stok }}</strong></td>
-                    <td>{{ $item->satuan }}</td>
+                    <td>1</td>
+                    <td class="text-left">-</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td class="text-left">-</td>
+                    <td class="text-right">0</td>
+                    <td>-</td>
                 </tr>
-            @empty
-                <tr>
-                    <td colspan="6" class="text-center" style="color: #999;">
-                        Tidak ada data stock barang
-                    </td>
-                </tr>
-            @endforelse
+            @endif
         </tbody>
     </table>
-    
-    @if($stocks->count() > 0)
-        <div class="summary">
-            <div class="summary-row">
-                Total Stock Keseluruhan: <span style="color: #e74c3c;">{{ $totalStok }}</span>
-            </div>
-            <div class="summary-row">
-                Jumlah Item: {{ $stocks->count() }}
-            </div>
+
+    <div class="signature-wrapper">
+        <table class="signature-row">
+            <tr>
+                <td class="signature-col">
+                    <div class="signature-line"></div>
+                    Checked By
+                </td>
+                <td class="signature-gap"></td>
+                <td class="signature-col">
+                    <div class="signature-line"></div>
+                    Warehouse Admin
+                </td>
+            </tr>
+        </table>
+
+        <div class="signature-manager">
+            <div class="signature-line"></div>
+            Warehouse Manager
         </div>
-    @endif
-    
-    <div class="footer">
-        <p>Laporan otomatis yang dihasilkan oleh sistem warehouse management</p>
-        <p style="margin-top: 10px; font-size: 10px;">© {{ date('Y') }} - Semua hak dilindungi</p>
     </div>
 </body>
 </html>
