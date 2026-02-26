@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     @if(isset($isForm) && $isForm)
-        <title>Goods Expenditure Form</title>
+        <title>Good Expenditure Form</title>
         <style>
             @page {
                 margin: 22px;
@@ -20,7 +20,6 @@
                 text-align: center;
                 font-size: 30px;
                 font-weight: 700;
-                text-transform: lowercase;
                 letter-spacing: 0.4px;
             }
 
@@ -54,30 +53,33 @@
                 width: 100%;
                 border-collapse: collapse;
                 margin-top: 6px;
+                table-layout: fixed;
             }
 
             .main-table th,
             .main-table td {
                 border: 1px solid #111;
-                font-size: 16px;
-                padding: 8px 10px;
+                padding: 4px 6px;
+                line-height: 1.2;
             }
 
             .main-table th {
                 text-align: center;
                 font-weight: 400;
-                height: 46px;
+                font-size: 11px;
+                height: 24px;
             }
 
             .main-table td {
-                height: 50px;
+                font-size: 10px;
                 text-align: center;
-                vertical-align: middle;
+                vertical-align: top;
                 font-weight: 400;
             }
 
             .main-table .text-left {
                 text-align: left;
+                word-break: break-word;
             }
 
             .signature-wrapper {
@@ -116,6 +118,7 @@
 
             .signature-manager .signature-line {
                 width: 280px;
+                margin: 0 auto 32px;
             }
         </style>
     @else

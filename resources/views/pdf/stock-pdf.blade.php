@@ -19,7 +19,6 @@
             text-align: center;
             font-size: 30px;
             font-weight: 700;
-            text-transform: lowercase;
             letter-spacing: 0.4px;
         }
 
@@ -53,29 +52,32 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 6px;
+            table-layout: fixed;
         }
 
         .main-table th,
         .main-table td {
             border: 1px solid #111;
-            padding: 7px 8px;
-            font-size: 13px;
+            padding: 4px 6px;
+            line-height: 1.2;
             font-weight: 400;
         }
 
         .main-table th {
             text-align: center;
-            height: 40px;
+            font-size: 11px;
+            height: 24px;
         }
 
         .main-table td {
+            font-size: 10px;
             text-align: center;
-            vertical-align: middle;
-            height: 38px;
+            vertical-align: top;
         }
 
         .main-table .text-left {
             text-align: left;
+            word-break: break-word;
         }
 
         .main-table .text-right {
@@ -118,11 +120,12 @@
 
         .signature-manager .signature-line {
             width: 280px;
+            margin: 0 auto 32px;
         }
     </style>
 </head>
 <body>
-    <div class="title">goods stock form</div>
+    <div class="title">Goods Stock Form</div>
 
     <table class="meta-table">
         <tr>
@@ -226,7 +229,7 @@
 
         <div class="signature-manager">
             <div class="signature-line"></div>
-            warehouse manager
+            Warehouse Manager
         </div>
     </div>
 </body>
